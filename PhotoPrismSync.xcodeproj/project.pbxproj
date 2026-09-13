@@ -1,0 +1,396 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0350070384AA7B43346CE76A /* PhotoPrismSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068F95EC89EDCC87317C8C82 /* PhotoPrismSyncCore.swift */; };
+		1B989CC1F4AF0CF44ED9C526 /* LocalPhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5F8AEC981E7C5DD11A4EC7 /* LocalPhotoLibraryService.swift */; };
+		31D9BDFF86BA6A757E8C5580 /* CriteriaEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE08B3AF834B09C885C708D /* CriteriaEvaluator.swift */; };
+		4F0A0A5A662EC3C046CB1F71 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813808A80527D232FFDAD2AE /* Models.swift */; };
+		63B011A1EF80A08CB3CEA153 /* PhotoPrismClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DB98FE9685ACDE6846E806D /* PhotoPrismClient.swift */; };
+		7F66FA609C0D67A47E2A73DD /* PreviewGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B950C7363EB429B63D76B6C7 /* PreviewGridView.swift */; };
+		8652D56C9810C622CA59C392 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BEF457E808E86ED53E41F8 /* KeychainStore.swift */; };
+		9AF504E02BCCCB54A7E9AA7A /* CriteriaFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F6F3CA4BF8B14F5B28861 /* CriteriaFormView.swift */; };
+		A858FA0836CB2C73C784C86B /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B50C474C4E31858BCCCACC6 /* AppViewModel.swift */; };
+		AD8AA58A540DD0D9E039A2A6 /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC910BD937C29466B7D96B4D /* AppSettingsStore.swift */; };
+		D26D14F596C15DA85ADCB809 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F116F6C4094AD329484E85 /* ContentView.swift */; };
+		D45E55055D28BDBD686582B7 /* PhotoPrismSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BC4B726E7DE0583384585 /* PhotoPrismSyncApp.swift */; };
+		D7ADC7B6956E4B04D183A2A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA230A0491A7595C3D3495 /* Foundation.framework */; };
+		F11DC34FA536F0AC37CF5D46 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DA4654607118CC5CE3443C /* SettingsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04BEF457E808E86ED53E41F8 /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeychainStore.swift; path = PhotoPrismSync/Services/KeychainStore.swift; sourceTree = "<group>"; };
+		068F95EC89EDCC87317C8C82 /* PhotoPrismSyncCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncCore.swift; path = Sources/PhotoPrismSyncCore/PhotoPrismSyncCore.swift; sourceTree = "<group>"; };
+		2DE08B3AF834B09C885C708D /* CriteriaEvaluator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaEvaluator.swift; path = Sources/PhotoPrismSyncCore/CriteriaEvaluator.swift; sourceTree = "<group>"; };
+		33DA4654607118CC5CE3443C /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = PhotoPrismSync/Views/SettingsView.swift; sourceTree = "<group>"; };
+		340F6F3CA4BF8B14F5B28861 /* CriteriaFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaFormView.swift; path = PhotoPrismSync/Views/CriteriaFormView.swift; sourceTree = "<group>"; };
+		58F116F6C4094AD329484E85 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = PhotoPrismSync/ContentView.swift; sourceTree = "<group>"; };
+		5B50C474C4E31858BCCCACC6 /* AppViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppViewModel.swift; path = PhotoPrismSync/ViewModels/AppViewModel.swift; sourceTree = "<group>"; };
+		6E90B07DCCAEC4747839CF30 /* PhotoPrismSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PhotoPrismSync.app; path = PhotoPrismSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DB98FE9685ACDE6846E806D /* PhotoPrismClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismClient.swift; path = PhotoPrismSync/Services/PhotoPrismClient.swift; sourceTree = "<group>"; };
+		813808A80527D232FFDAD2AE /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Models.swift; path = Sources/PhotoPrismSyncCore/Models.swift; sourceTree = "<group>"; };
+		86AA230A0491A7595C3D3495 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		AC910BD937C29466B7D96B4D /* AppSettingsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettingsStore.swift; path = PhotoPrismSync/Services/AppSettingsStore.swift; sourceTree = "<group>"; };
+		AE257FCF9630572CBD3850DF /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = PhotoPrismSync/Resources/Info.plist; sourceTree = "<group>"; };
+		B50BC4B726E7DE0583384585 /* PhotoPrismSyncApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncApp.swift; path = PhotoPrismSync/PhotoPrismSyncApp.swift; sourceTree = "<group>"; };
+		B950C7363EB429B63D76B6C7 /* PreviewGridView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreviewGridView.swift; path = PhotoPrismSync/Views/PreviewGridView.swift; sourceTree = "<group>"; };
+		FD5F8AEC981E7C5DD11A4EC7 /* LocalPhotoLibraryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalPhotoLibraryService.swift; path = PhotoPrismSync/Services/LocalPhotoLibraryService.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C6AFEE2CD4D73B3384A64E2B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7ADC7B6956E4B04D183A2A4 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3E3EED2952409B86836C6314 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				52912FB9CE789F64F4E9F7B3 /* PhotoPrismSyncCore */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		52912FB9CE789F64F4E9F7B3 /* PhotoPrismSyncCore */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = PhotoPrismSyncCore;
+			sourceTree = "<group>";
+		};
+		6BC52049EDC8E30C48B44AD3 = {
+			isa = PBXGroup;
+			children = (
+				8001AF647D4852EA48848D06 /* Products */,
+				F31292A4870613455951A44D /* Frameworks */,
+				E04F906A9E5495F2D1297550 /* PhotoPrismSync */,
+				3E3EED2952409B86836C6314 /* Sources */,
+				B50BC4B726E7DE0583384585 /* PhotoPrismSyncApp.swift */,
+				58F116F6C4094AD329484E85 /* ContentView.swift */,
+				AC910BD937C29466B7D96B4D /* AppSettingsStore.swift */,
+				04BEF457E808E86ED53E41F8 /* KeychainStore.swift */,
+				FD5F8AEC981E7C5DD11A4EC7 /* LocalPhotoLibraryService.swift */,
+				7DB98FE9685ACDE6846E806D /* PhotoPrismClient.swift */,
+				5B50C474C4E31858BCCCACC6 /* AppViewModel.swift */,
+				340F6F3CA4BF8B14F5B28861 /* CriteriaFormView.swift */,
+				B950C7363EB429B63D76B6C7 /* PreviewGridView.swift */,
+				33DA4654607118CC5CE3443C /* SettingsView.swift */,
+				813808A80527D232FFDAD2AE /* Models.swift */,
+				2DE08B3AF834B09C885C708D /* CriteriaEvaluator.swift */,
+				068F95EC89EDCC87317C8C82 /* PhotoPrismSyncCore.swift */,
+				AE257FCF9630572CBD3850DF /* Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		8001AF647D4852EA48848D06 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6E90B07DCCAEC4747839CF30 /* PhotoPrismSync.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9C142A7BD35C1B8BBD2E4A6C /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				86AA230A0491A7595C3D3495 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		E04F906A9E5495F2D1297550 /* PhotoPrismSync */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = PhotoPrismSync;
+			sourceTree = "<group>";
+		};
+		F31292A4870613455951A44D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9C142A7BD35C1B8BBD2E4A6C /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		05D2A69FA3E62408F48B52C7 /* PhotoPrismSync */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3805F239F75BC14925DA7F89 /* Build configuration list for PBXNativeTarget "PhotoPrismSync" */;
+			buildPhases = (
+				A8A723634FBB0762283B11EF /* Sources */,
+				C6AFEE2CD4D73B3384A64E2B /* Frameworks */,
+				FB6812F780A43584DFF6831A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PhotoPrismSync;
+			productName = PhotoPrismSync;
+			productReference = 6E90B07DCCAEC4747839CF30 /* PhotoPrismSync.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		651667423B5171AC7AFB0C3D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 74EEC96DD66EE305E4AFE76B /* Build configuration list for PBXProject "PhotoPrismSync" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6BC52049EDC8E30C48B44AD3;
+			minimizedProjectReferenceProxies = 0;
+			preferredProjectObjectVersion = 100;
+			productRefGroup = 8001AF647D4852EA48848D06 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				05D2A69FA3E62408F48B52C7 /* PhotoPrismSync */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FB6812F780A43584DFF6831A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A8A723634FBB0762283B11EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D45E55055D28BDBD686582B7 /* PhotoPrismSyncApp.swift in Sources */,
+				D26D14F596C15DA85ADCB809 /* ContentView.swift in Sources */,
+				AD8AA58A540DD0D9E039A2A6 /* AppSettingsStore.swift in Sources */,
+				8652D56C9810C622CA59C392 /* KeychainStore.swift in Sources */,
+				1B989CC1F4AF0CF44ED9C526 /* LocalPhotoLibraryService.swift in Sources */,
+				63B011A1EF80A08CB3CEA153 /* PhotoPrismClient.swift in Sources */,
+				A858FA0836CB2C73C784C86B /* AppViewModel.swift in Sources */,
+				9AF504E02BCCCB54A7E9AA7A /* CriteriaFormView.swift in Sources */,
+				7F66FA609C0D67A47E2A73DD /* PreviewGridView.swift in Sources */,
+				F11DC34FA536F0AC37CF5D46 /* SettingsView.swift in Sources */,
+				4F0A0A5A662EC3C046CB1F71 /* Models.swift in Sources */,
+				31D9BDFF86BA6A757E8C5580 /* CriteriaEvaluator.swift in Sources */,
+				0350070384AA7B43346CE76A /* PhotoPrismSyncCore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		574B92DBCA6585BEEFB6AB8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		76534E3A06C3AAD8291F74D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PhotoPrismSync/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mpowney.PhotoPrismSync;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		7841410AC12759F64EEAC343 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PhotoPrismSync/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mpowney.PhotoPrismSync;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C8DDC6140FEAA494CE7B56AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3805F239F75BC14925DA7F89 /* Build configuration list for PBXNativeTarget "PhotoPrismSync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7841410AC12759F64EEAC343 /* Release */,
+				76534E3A06C3AAD8291F74D5 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		74EEC96DD66EE305E4AFE76B /* Build configuration list for PBXProject "PhotoPrismSync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				574B92DBCA6585BEEFB6AB8D /* Debug */,
+				C8DDC6140FEAA494CE7B56AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 651667423B5171AC7AFB0C3D /* Project object */;
+}
