@@ -92,8 +92,8 @@ final class PhotoPrismClient {
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let (_, response) = try await URLSession.shared.upload(for: request, fromFile: bodyURL)
-        try validate(response: response, payload: nil)
+        let (data, response) = try await URLSession.shared.upload(for: request, fromFile: bodyURL)
+        try validate(response: response, payload: data)
     }
 
     func processUploadedOriginals(userUID: String, uploadToken: String, using settings: PhotoPrismServerSettings) async throws {

@@ -31,7 +31,7 @@ struct SettingsView: View {
                 }
 
                 Section("Notes") {
-                    Text("Credentials are kept in the device keychain. Uploads use original asset data so PhotoPrism receives the best available metadata.")
+                    Text("The PhotoPrism server URL and username are stored in app preferences, and the password is stored in the device keychain. Uploads use original asset data so PhotoPrism receives the best available metadata.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
