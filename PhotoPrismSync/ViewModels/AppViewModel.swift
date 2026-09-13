@@ -166,7 +166,7 @@ final class AppViewModel: ObservableObject {
             case .deleteFoundInPhotoPrism:
                 let localItems = try await photoLibrary.fetchLibraryItems()
                 let remoteItems = try await photoPrismClient.fetchLibraryItems(using: settings)
-                let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
+                let matching = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .deleteFoundInPhotoPrism, criteria: criteria, items: sorted(matching))
             case .deleteOlderThan:
                 let localItems = try await photoLibrary.fetchLibraryItems()

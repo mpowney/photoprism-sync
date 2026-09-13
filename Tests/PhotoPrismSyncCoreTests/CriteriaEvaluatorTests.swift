@@ -67,4 +67,21 @@ import Testing
 
         #expect(result.isEmpty)
     }
+
+    @Test func matchingDuplicatesReturnsOnlyItemsPresentInReferenceSet() {
+        let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
+        let localItems = [
+            AssetDescriptor(id: "1", source: .local, filename: "keep.heic", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100),
+            AssetDescriptor(id: "2", source: .local, filename: "delete.heic", capturedAt: timestamp.addingTimeInterval(-60), mediaKind: .photo, sizeBytes: 100),
+        ]
+        let remoteItems = [
+            AssetDescriptor(id: "r1", source: .remote, filename: "delete.heic", capturedAt: timestamp.addingTimeInterval(-600), mediaKind: .photo, sizeBytes: 100),
+        ]
+        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.filename])
+
+        let result = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems, now: timestamp)
+
+        #expect(result.map(\.id) == ["2"])
+    }
+
 }

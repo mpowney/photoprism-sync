@@ -424,7 +424,7 @@ private struct RemotePhoto: Decodable {
             id: uid,
             source: .remote,
             filename: filename,
-            capturedAt: DateParser.parse(takenAtLocal) ?? DateParser.parse(takenAt),
+            capturedAt: DateParser.parse(takenAt) ?? DateParser.parse(takenAtLocal),
             mediaKind: mediaKind,
             sizeBytes: Int64(preferredFile?.size ?? 0),
             previewURL: previewURL,
@@ -468,7 +468,7 @@ private enum DateParser {
         ["yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss"].map { format in
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = .current
+            formatter.timeZone = TimeZone(secondsFromGMT: 0)
             formatter.dateFormat = format
             return formatter
         }

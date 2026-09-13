@@ -143,7 +143,7 @@ final class LocalPhotoLibraryService {
         case .video:
             return .video
         case .livePhoto:
-            return filename.lowercased().hasSuffix(".mov") ? .pairedVideo : .photo
+            return filename.lowercased().hasSuffix(".mov") ? .video : .photo
         case .photo:
             return .photo
         }
