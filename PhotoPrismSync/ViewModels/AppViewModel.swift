@@ -251,7 +251,7 @@ final class AppViewModel: ObservableObject {
         for item in snapshot.items {
             progressMessage = "Downloading \(item.filename)…"
             let data = try await photoPrismClient.downloadOriginal(for: item, using: settings)
-            try await photoLibrary.saveDownloadedAsset(data: data, filename: item.filename, capturedAt: item.capturedAt, mediaKind: item.mediaKind)
+            try await photoLibrary.saveDownloadedAsset(data: data, filename: item.filename, capturedAt: item.capturedAt, mediaKind: importMediaKind(forDownloadedItem: item))
             completedItems += 1
         }
     }
@@ -305,6 +305,13 @@ final class AppViewModel: ObservableObject {
             }
             return $0.filename.localizedCaseInsensitiveCompare($1.filename) == .orderedAscending
         }
+    }
+
+    private func importMediaKind(forDownloadedItem item: AssetDescriptor) -> MediaKind {
+        guard item.mediaKind == .livePhoto else { return item.mediaKind }
+        let videoExtensions = ["mov", "mp4", "m4v"]
+        let fileExtension = URL(fileURLWithPath: item.filename).pathExtension.lowercased()
+        return videoExtensions.contains(fileExtension) ? .video : .photo
     }
 
     private func cleanupTemporaryFiles(_ fileURLs: [URL]) {

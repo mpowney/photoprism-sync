@@ -151,8 +151,11 @@ actor PhotoPrismClient {
     }
 
     private func apiBaseURL(from baseURL: URL) -> URL {
-        if baseURL.path.hasSuffix("/api/v1") {
-            return baseURL
+        let normalizedPath = baseURL.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if normalizedPath.hasSuffix("api/v1") {
+            var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+            components?.path = "/" + normalizedPath
+            return components?.url ?? baseURL
         }
 
         return baseURL.appendingPathComponent("api").appendingPathComponent("v1")
@@ -226,6 +229,7 @@ actor PhotoPrismClient {
             try validate(response: retryHTTPResponse, payload: retryData)
             return (retryData, retryHTTPResponse)
         }
+        try validate(response: httpResponse, payload: data)
         return (data, httpResponse)
     }
 

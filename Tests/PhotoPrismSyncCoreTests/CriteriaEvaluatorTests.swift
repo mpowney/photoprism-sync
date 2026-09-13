@@ -119,6 +119,31 @@ private actor UploadExecutionRecorder {
         #expect(result.map(\.id) == ["1"])
     }
 
+
+
+    @Test func uploadExecutionCoordinatorReportsFinalizationFailureWithUploadedCount() async throws {
+        struct SampleError: Error {}
+
+        let item = AssetDescriptor(id: "1", source: .local, filename: "item.heic", capturedAt: nil, mediaKind: .photo, sizeBytes: 10)
+
+        do {
+            try await UploadExecutionCoordinator.execute(
+                items: [item],
+                exportResources: { _ in [URL(fileURLWithPath: "/tmp/item.heic")] },
+                uploadResources: { _, _ in },
+                finalize: { throw SampleError() }
+            )
+            Issue.record("Expected finalization failure")
+        } catch let error as UploadExecutionCoordinatorError {
+            if case let .finalizationFailed(uploadedCount, underlyingError) = error {
+                #expect(uploadedCount == 1)
+                #expect(underlyingError is SampleError)
+            } else {
+                Issue.record("Unexpected upload execution error")
+            }
+        }
+    }
+
     @Test func uploadExecutionCoordinatorFinalizesOnlyWhenItemsExist() async throws {
         let item = AssetDescriptor(id: "1", source: .local, filename: "item.heic", capturedAt: nil, mediaKind: .photo, sizeBytes: 10)
         let recorder = UploadExecutionRecorder()
