@@ -23,9 +23,10 @@ public enum UploadExecutionCoordinator {
 
         for item in items {
             let fileURLs = try await exportResources(item)
-            defer { cleanup(fileURLs) }
-
-            try await uploadResources(item, fileURLs)
+            do {
+                defer { cleanup(fileURLs) }
+                try await uploadResources(item, fileURLs)
+            }
             uploadedCount += 1
         }
 

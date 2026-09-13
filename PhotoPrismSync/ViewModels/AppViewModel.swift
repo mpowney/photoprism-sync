@@ -119,8 +119,6 @@ final class AppViewModel: ObservableObject {
         do {
             try settingsStore.save(settings)
             noticeMessage = "PhotoPrism settings saved."
-        } catch let error as UploadExecutionCoordinatorError {
-            errorMessage = error.localizedDescription
         } catch {
             errorMessage = error.localizedDescription
         }

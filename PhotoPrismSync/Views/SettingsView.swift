@@ -37,6 +37,9 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .onChange(of: viewModel.settings.baseURLString) { _, _ in viewModel.invalidateCalculation() }
+            .onChange(of: viewModel.settings.username) { _, _ in viewModel.invalidateCalculation() }
+            .onChange(of: viewModel.settings.password) { _, _ in viewModel.invalidateCalculation() }
         }
     }
 }
