@@ -2,21 +2,46 @@ import Foundation
 import Testing
 @testable import PhotoPrismSyncCore
 
-private actor UploadExecutionRecorder {
-    private(set) var uploaded: [String] = []
-    private(set) var finalizeCount = 0
-    private(set) var cleanedCount = 0
+private final class UploadExecutionRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var uploadedStorage: [String] = []
+    private var finalizeCountStorage = 0
+    private var cleanedCountStorage = 0
+
+    var uploaded: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return uploadedStorage
+    }
+
+    var finalizeCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return finalizeCountStorage
+    }
+
+    var cleanedCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return cleanedCountStorage
+    }
 
     func recordUpload(_ id: String) {
-        uploaded.append(id)
+        lock.lock()
+        uploadedStorage.append(id)
+        lock.unlock()
     }
 
     func recordFinalize() {
-        finalizeCount += 1
+        lock.lock()
+        finalizeCountStorage += 1
+        lock.unlock()
     }
 
     func recordCleanup() {
-        cleanedCount += 1
+        lock.lock()
+        cleanedCountStorage += 1
+        lock.unlock()
     }
 }
 
@@ -102,8 +127,6 @@ private actor UploadExecutionRecorder {
         #expect(result.map(\.id) == ["2"])
     }
 
-
-
     @Test func matchingDuplicatesFallsBackToAllRulesWhenDuplicateOptionsAreImplicit() {
         let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
         let localItems = [
@@ -118,8 +141,6 @@ private actor UploadExecutionRecorder {
 
         #expect(result.map(\.id) == ["1"])
     }
-
-
 
     @Test func uploadExecutionCoordinatorReportsFinalizationFailureWithUploadedCount() async throws {
         struct SampleError: Error {}
@@ -151,27 +172,27 @@ private actor UploadExecutionRecorder {
         try await UploadExecutionCoordinator.execute(
             items: [item],
             exportResources: { _ in [URL(fileURLWithPath: "/tmp/item.heic")] },
-            uploadResources: { asset, _ in await recorder.recordUpload(asset.id) },
-            finalize: { await recorder.recordFinalize() },
-            cleanup: { _ in await recorder.recordCleanup() }
+            uploadResources: { asset, _ in recorder.recordUpload(asset.id) },
+            finalize: { recorder.recordFinalize() },
+            cleanup: { _ in recorder.recordCleanup() }
         )
 
-        #expect(await recorder.uploaded == ["1"])
-        #expect(await recorder.finalizeCount == 1)
-        #expect(await recorder.cleanedCount == 1)
+        #expect(recorder.uploaded == ["1"])
+        #expect(recorder.finalizeCount == 1)
+        #expect(recorder.cleanedCount == 1)
 
         let emptyRecorder = UploadExecutionRecorder()
 
         try await UploadExecutionCoordinator.execute(
             items: [],
             exportResources: { _ in [URL(fileURLWithPath: "/tmp/item.heic")] },
-            uploadResources: { asset, _ in await emptyRecorder.recordUpload(asset.id) },
-            finalize: { await emptyRecorder.recordFinalize() },
-            cleanup: { _ in await emptyRecorder.recordCleanup() }
+            uploadResources: { asset, _ in emptyRecorder.recordUpload(asset.id) },
+            finalize: { emptyRecorder.recordFinalize() },
+            cleanup: { _ in emptyRecorder.recordCleanup() }
         )
 
-        #expect(await emptyRecorder.uploaded.isEmpty)
-        #expect(await emptyRecorder.finalizeCount == 0)
-        #expect(await emptyRecorder.cleanedCount == 0)
+        #expect(emptyRecorder.uploaded.isEmpty)
+        #expect(emptyRecorder.finalizeCount == 0)
+        #expect(emptyRecorder.cleanedCount == 0)
     }
 }

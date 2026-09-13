@@ -17,19 +17,15 @@ public enum UploadExecutionCoordinator {
         exportResources: @Sendable (AssetDescriptor) async throws -> [URL],
         uploadResources: @Sendable (AssetDescriptor, [URL]) async throws -> Void,
         finalize: @Sendable () async throws -> Void,
-        cleanup: @Sendable ([URL]) async -> Void = { _ in }
+        cleanup: @Sendable ([URL]) -> Void = { _ in }
     ) async throws {
         var uploadedCount = 0
 
         for item in items {
             let fileURLs = try await exportResources(item)
-            do {
-                try await uploadResources(item, fileURLs)
-            } catch {
-                await cleanup(fileURLs)
-                throw error
-            }
-            await cleanup(fileURLs)
+            defer { cleanup(fileURLs) }
+
+            try await uploadResources(item, fileURLs)
             uploadedCount += 1
         }
 
