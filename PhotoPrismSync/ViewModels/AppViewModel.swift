@@ -220,28 +220,29 @@ final class AppViewModel: ObservableObject {
         let uploadToken = UUID().uuidString
         let sessionInfo = try await photoPrismClient.sessionInfo(using: settings)
 
-        for item in snapshot.items {
-            progressMessage = "Uploading \(item.filename)…"
-            let fileURLs = try await photoLibrary.exportOriginalResources(forLocalIdentifier: item.id)
-            do {
+        try await UploadExecutionCoordinator.execute(
+            items: snapshot.items,
+            exportResources: { item in
+                progressMessage = "Uploading \(item.filename)…"
+                return try await photoLibrary.exportOriginalResources(forLocalIdentifier: item.id)
+            },
+            uploadResources: { item, fileURLs in
                 try await photoPrismClient.uploadOriginals(
                     fileURLs: fileURLs,
                     userUID: sessionInfo.userUID,
                     uploadToken: uploadToken,
                     using: settings
                 )
-            } catch {
+                completedItems += 1
+            },
+            finalize: {
+                progressMessage = "Finalizing PhotoPrism import…"
+                try await photoPrismClient.processUploadedOriginals(userUID: sessionInfo.userUID, uploadToken: uploadToken, using: settings)
+            },
+            cleanup: { fileURLs in
                 cleanupTemporaryFiles(fileURLs)
-                throw error
             }
-            cleanupTemporaryFiles(fileURLs)
-            completedItems += 1
-        }
-
-        if !snapshot.items.isEmpty {
-            progressMessage = "Finalizing PhotoPrism import…"
-            try await photoPrismClient.processUploadedOriginals(userUID: sessionInfo.userUID, uploadToken: uploadToken, using: settings)
-        }
+        )
     }
 
     private func executeDownload(_ snapshot: CalculationSnapshot) async throws {

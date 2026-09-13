@@ -7,39 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0350070384AA7B43346CE76A /* PhotoPrismSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068F95EC89EDCC87317C8C82 /* PhotoPrismSyncCore.swift */; };
-		1B989CC1F4AF0CF44ED9C526 /* LocalPhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5F8AEC981E7C5DD11A4EC7 /* LocalPhotoLibraryService.swift */; };
-		31D9BDFF86BA6A757E8C5580 /* CriteriaEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE08B3AF834B09C885C708D /* CriteriaEvaluator.swift */; };
-		4F0A0A5A662EC3C046CB1F71 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813808A80527D232FFDAD2AE /* Models.swift */; };
-		63B011A1EF80A08CB3CEA153 /* PhotoPrismClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DB98FE9685ACDE6846E806D /* PhotoPrismClient.swift */; };
-		7F66FA609C0D67A47E2A73DD /* PreviewGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B950C7363EB429B63D76B6C7 /* PreviewGridView.swift */; };
-		8652D56C9810C622CA59C392 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BEF457E808E86ED53E41F8 /* KeychainStore.swift */; };
-		9AF504E02BCCCB54A7E9AA7A /* CriteriaFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F6F3CA4BF8B14F5B28861 /* CriteriaFormView.swift */; };
-		A858FA0836CB2C73C784C86B /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B50C474C4E31858BCCCACC6 /* AppViewModel.swift */; };
-		AD8AA58A540DD0D9E039A2A6 /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC910BD937C29466B7D96B4D /* AppSettingsStore.swift */; };
-		D26D14F596C15DA85ADCB809 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F116F6C4094AD329484E85 /* ContentView.swift */; };
-		D45E55055D28BDBD686582B7 /* PhotoPrismSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BC4B726E7DE0583384585 /* PhotoPrismSyncApp.swift */; };
+		156F168AEB9166D4BAAC9C1D /* CriteriaFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E824CF21584432497B0EDE94 /* CriteriaFormView.swift */; };
+		39D90C37FDAA44979AAA7B81 /* CriteriaEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A558C20DC85EAAC7745BA /* CriteriaEvaluator.swift */; };
+		556628D1865998B8320499AF /* PhotoPrismSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB041655C481313B6D3516D1 /* PhotoPrismSyncCore.swift */; };
+		7814F9C6F8E9D9AB9333A85F /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64B33A8121B770DD0D6E732 /* KeychainStore.swift */; };
+		7FA129E4C6A468ED26A770CD /* UploadExecutionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447C8CEFF039398D17F07A30 /* UploadExecutionCoordinator.swift */; };
+		8C5B1DBE48256FA74429682F /* PhotoPrismClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A6D80124E285159AABF2B3 /* PhotoPrismClient.swift */; };
+		94CBBDD86218FC1528DB4DDF /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FC26F363326C7CE1BB7C49 /* AppViewModel.swift */; };
+		AC56488C40EF2997AFB335A7 /* PreviewGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB4CB7D255DC89F746B7879 /* PreviewGridView.swift */; };
+		AE366E750B98AE6286C95AA3 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326909429EC483BA1F58BC1C /* Models.swift */; };
+		BE87B8DC623CE9755A853235 /* PhotoPrismSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA522BAD7852307A820B5A07 /* PhotoPrismSyncApp.swift */; };
+		C2BD09FCB6359283A76B6078 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE634CC962C075CEB3808B6 /* ContentView.swift */; };
+		D32A39344B63260F2F8F05F6 /* LocalPhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A42EBD42AA9D3668628F13 /* LocalPhotoLibraryService.swift */; };
+		D5D7A54A7E01C4E18274D007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381CC38DF1E0328FA3F7F4F7 /* SettingsView.swift */; };
 		D7ADC7B6956E4B04D183A2A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA230A0491A7595C3D3495 /* Foundation.framework */; };
-		F11DC34FA536F0AC37CF5D46 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DA4654607118CC5CE3443C /* SettingsView.swift */; };
+		EDE482373EC346B2680B9357 /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA335C49B2EEB95FACF1312 /* AppSettingsStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		04BEF457E808E86ED53E41F8 /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeychainStore.swift; path = PhotoPrismSync/Services/KeychainStore.swift; sourceTree = "<group>"; };
-		068F95EC89EDCC87317C8C82 /* PhotoPrismSyncCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncCore.swift; path = Sources/PhotoPrismSyncCore/PhotoPrismSyncCore.swift; sourceTree = "<group>"; };
-		2DE08B3AF834B09C885C708D /* CriteriaEvaluator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaEvaluator.swift; path = Sources/PhotoPrismSyncCore/CriteriaEvaluator.swift; sourceTree = "<group>"; };
-		33DA4654607118CC5CE3443C /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = PhotoPrismSync/Views/SettingsView.swift; sourceTree = "<group>"; };
-		340F6F3CA4BF8B14F5B28861 /* CriteriaFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaFormView.swift; path = PhotoPrismSync/Views/CriteriaFormView.swift; sourceTree = "<group>"; };
-		58F116F6C4094AD329484E85 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = PhotoPrismSync/ContentView.swift; sourceTree = "<group>"; };
-		5B50C474C4E31858BCCCACC6 /* AppViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppViewModel.swift; path = PhotoPrismSync/ViewModels/AppViewModel.swift; sourceTree = "<group>"; };
+		002A558C20DC85EAAC7745BA /* CriteriaEvaluator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaEvaluator.swift; path = Sources/PhotoPrismSyncCore/CriteriaEvaluator.swift; sourceTree = "<group>"; };
+		1AA335C49B2EEB95FACF1312 /* AppSettingsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettingsStore.swift; path = PhotoPrismSync/Services/AppSettingsStore.swift; sourceTree = "<group>"; };
+		1DE634CC962C075CEB3808B6 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = PhotoPrismSync/ContentView.swift; sourceTree = "<group>"; };
+		326909429EC483BA1F58BC1C /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Models.swift; path = Sources/PhotoPrismSyncCore/Models.swift; sourceTree = "<group>"; };
+		381CC38DF1E0328FA3F7F4F7 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = PhotoPrismSync/Views/SettingsView.swift; sourceTree = "<group>"; };
+		3EB4CB7D255DC89F746B7879 /* PreviewGridView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreviewGridView.swift; path = PhotoPrismSync/Views/PreviewGridView.swift; sourceTree = "<group>"; };
+		447C8CEFF039398D17F07A30 /* UploadExecutionCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadExecutionCoordinator.swift; path = Sources/PhotoPrismSyncCore/UploadExecutionCoordinator.swift; sourceTree = "<group>"; };
 		6E90B07DCCAEC4747839CF30 /* PhotoPrismSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PhotoPrismSync.app; path = PhotoPrismSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DB98FE9685ACDE6846E806D /* PhotoPrismClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismClient.swift; path = PhotoPrismSync/Services/PhotoPrismClient.swift; sourceTree = "<group>"; };
-		813808A80527D232FFDAD2AE /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Models.swift; path = Sources/PhotoPrismSyncCore/Models.swift; sourceTree = "<group>"; };
+		75A42EBD42AA9D3668628F13 /* LocalPhotoLibraryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalPhotoLibraryService.swift; path = PhotoPrismSync/Services/LocalPhotoLibraryService.swift; sourceTree = "<group>"; };
 		86AA230A0491A7595C3D3495 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		AC910BD937C29466B7D96B4D /* AppSettingsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettingsStore.swift; path = PhotoPrismSync/Services/AppSettingsStore.swift; sourceTree = "<group>"; };
-		AE257FCF9630572CBD3850DF /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = PhotoPrismSync/Resources/Info.plist; sourceTree = "<group>"; };
-		B50BC4B726E7DE0583384585 /* PhotoPrismSyncApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncApp.swift; path = PhotoPrismSync/PhotoPrismSyncApp.swift; sourceTree = "<group>"; };
-		B950C7363EB429B63D76B6C7 /* PreviewGridView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreviewGridView.swift; path = PhotoPrismSync/Views/PreviewGridView.swift; sourceTree = "<group>"; };
-		FD5F8AEC981E7C5DD11A4EC7 /* LocalPhotoLibraryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalPhotoLibraryService.swift; path = PhotoPrismSync/Services/LocalPhotoLibraryService.swift; sourceTree = "<group>"; };
+		93B6256C1C853B7C143FC6EA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = PhotoPrismSync/Resources/Info.plist; sourceTree = "<group>"; };
+		98FC26F363326C7CE1BB7C49 /* AppViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppViewModel.swift; path = PhotoPrismSync/ViewModels/AppViewModel.swift; sourceTree = "<group>"; };
+		C1A6D80124E285159AABF2B3 /* PhotoPrismClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismClient.swift; path = PhotoPrismSync/Services/PhotoPrismClient.swift; sourceTree = "<group>"; };
+		C64B33A8121B770DD0D6E732 /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeychainStore.swift; path = PhotoPrismSync/Services/KeychainStore.swift; sourceTree = "<group>"; };
+		E824CF21584432497B0EDE94 /* CriteriaFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaFormView.swift; path = PhotoPrismSync/Views/CriteriaFormView.swift; sourceTree = "<group>"; };
+		EA522BAD7852307A820B5A07 /* PhotoPrismSyncApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncApp.swift; path = PhotoPrismSync/PhotoPrismSyncApp.swift; sourceTree = "<group>"; };
+		FB041655C481313B6D3516D1 /* PhotoPrismSyncCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncCore.swift; path = Sources/PhotoPrismSyncCore/PhotoPrismSyncCore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02C8F6459E59C1ACE09F11F6 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				98FC26F363326C7CE1BB7C49 /* AppViewModel.swift */,
+			);
+			name = ViewModels;
+			sourceTree = "<group>";
+		};
 		3E3EED2952409B86836C6314 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -65,6 +75,10 @@
 		52912FB9CE789F64F4E9F7B3 /* PhotoPrismSyncCore */ = {
 			isa = PBXGroup;
 			children = (
+				326909429EC483BA1F58BC1C /* Models.swift */,
+				002A558C20DC85EAAC7745BA /* CriteriaEvaluator.swift */,
+				FB041655C481313B6D3516D1 /* PhotoPrismSyncCore.swift */,
+				447C8CEFF039398D17F07A30 /* UploadExecutionCoordinator.swift */,
 			);
 			name = PhotoPrismSyncCore;
 			sourceTree = "<group>";
@@ -76,21 +90,17 @@
 				F31292A4870613455951A44D /* Frameworks */,
 				E04F906A9E5495F2D1297550 /* PhotoPrismSync */,
 				3E3EED2952409B86836C6314 /* Sources */,
-				B50BC4B726E7DE0583384585 /* PhotoPrismSyncApp.swift */,
-				58F116F6C4094AD329484E85 /* ContentView.swift */,
-				AC910BD937C29466B7D96B4D /* AppSettingsStore.swift */,
-				04BEF457E808E86ED53E41F8 /* KeychainStore.swift */,
-				FD5F8AEC981E7C5DD11A4EC7 /* LocalPhotoLibraryService.swift */,
-				7DB98FE9685ACDE6846E806D /* PhotoPrismClient.swift */,
-				5B50C474C4E31858BCCCACC6 /* AppViewModel.swift */,
-				340F6F3CA4BF8B14F5B28861 /* CriteriaFormView.swift */,
-				B950C7363EB429B63D76B6C7 /* PreviewGridView.swift */,
-				33DA4654607118CC5CE3443C /* SettingsView.swift */,
-				813808A80527D232FFDAD2AE /* Models.swift */,
-				2DE08B3AF834B09C885C708D /* CriteriaEvaluator.swift */,
-				068F95EC89EDCC87317C8C82 /* PhotoPrismSyncCore.swift */,
-				AE257FCF9630572CBD3850DF /* Info.plist */,
 			);
+			sourceTree = "<group>";
+		};
+		74596DFC5D21E4996AF91725 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E824CF21584432497B0EDE94 /* CriteriaFormView.swift */,
+				3EB4CB7D255DC89F746B7879 /* PreviewGridView.swift */,
+				381CC38DF1E0328FA3F7F4F7 /* SettingsView.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		8001AF647D4852EA48848D06 /* Products */ = {
@@ -109,9 +119,26 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		C3EDF48B5EDFD636FF0EDDB2 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				1AA335C49B2EEB95FACF1312 /* AppSettingsStore.swift */,
+				C64B33A8121B770DD0D6E732 /* KeychainStore.swift */,
+				75A42EBD42AA9D3668628F13 /* LocalPhotoLibraryService.swift */,
+				C1A6D80124E285159AABF2B3 /* PhotoPrismClient.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
 		E04F906A9E5495F2D1297550 /* PhotoPrismSync */ = {
 			isa = PBXGroup;
 			children = (
+				C3EDF48B5EDFD636FF0EDDB2 /* Services */,
+				02C8F6459E59C1ACE09F11F6 /* ViewModels */,
+				74596DFC5D21E4996AF91725 /* Views */,
+				FD09AFA1D2C908F38DB06350 /* Resources */,
+				EA522BAD7852307A820B5A07 /* PhotoPrismSyncApp.swift */,
+				1DE634CC962C075CEB3808B6 /* ContentView.swift */,
 			);
 			name = PhotoPrismSync;
 			sourceTree = "<group>";
@@ -122,6 +149,14 @@
 				9C142A7BD35C1B8BBD2E4A6C /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FD09AFA1D2C908F38DB06350 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				93B6256C1C853B7C143FC6EA /* Info.plist */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,19 +223,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D45E55055D28BDBD686582B7 /* PhotoPrismSyncApp.swift in Sources */,
-				D26D14F596C15DA85ADCB809 /* ContentView.swift in Sources */,
-				AD8AA58A540DD0D9E039A2A6 /* AppSettingsStore.swift in Sources */,
-				8652D56C9810C622CA59C392 /* KeychainStore.swift in Sources */,
-				1B989CC1F4AF0CF44ED9C526 /* LocalPhotoLibraryService.swift in Sources */,
-				63B011A1EF80A08CB3CEA153 /* PhotoPrismClient.swift in Sources */,
-				A858FA0836CB2C73C784C86B /* AppViewModel.swift in Sources */,
-				9AF504E02BCCCB54A7E9AA7A /* CriteriaFormView.swift in Sources */,
-				7F66FA609C0D67A47E2A73DD /* PreviewGridView.swift in Sources */,
-				F11DC34FA536F0AC37CF5D46 /* SettingsView.swift in Sources */,
-				4F0A0A5A662EC3C046CB1F71 /* Models.swift in Sources */,
-				31D9BDFF86BA6A757E8C5580 /* CriteriaEvaluator.swift in Sources */,
-				0350070384AA7B43346CE76A /* PhotoPrismSyncCore.swift in Sources */,
+				BE87B8DC623CE9755A853235 /* PhotoPrismSyncApp.swift in Sources */,
+				C2BD09FCB6359283A76B6078 /* ContentView.swift in Sources */,
+				EDE482373EC346B2680B9357 /* AppSettingsStore.swift in Sources */,
+				7814F9C6F8E9D9AB9333A85F /* KeychainStore.swift in Sources */,
+				D32A39344B63260F2F8F05F6 /* LocalPhotoLibraryService.swift in Sources */,
+				8C5B1DBE48256FA74429682F /* PhotoPrismClient.swift in Sources */,
+				94CBBDD86218FC1528DB4DDF /* AppViewModel.swift in Sources */,
+				156F168AEB9166D4BAAC9C1D /* CriteriaFormView.swift in Sources */,
+				AC56488C40EF2997AFB335A7 /* PreviewGridView.swift in Sources */,
+				D5D7A54A7E01C4E18274D007 /* SettingsView.swift in Sources */,
+				AE366E750B98AE6286C95AA3 /* Models.swift in Sources */,
+				39D90C37FDAA44979AAA7B81 /* CriteriaEvaluator.swift in Sources */,
+				556628D1865998B8320499AF /* PhotoPrismSyncCore.swift in Sources */,
+				7FA129E4C6A468ED26A770CD /* UploadExecutionCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

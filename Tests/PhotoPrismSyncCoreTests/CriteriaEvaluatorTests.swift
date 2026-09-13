@@ -2,6 +2,24 @@ import Foundation
 import Testing
 @testable import PhotoPrismSyncCore
 
+private actor UploadExecutionRecorder {
+    private(set) var uploaded: [String] = []
+    private(set) var finalizeCount = 0
+    private(set) var cleanedCount = 0
+
+    func recordUpload(_ id: String) {
+        uploaded.append(id)
+    }
+
+    func recordFinalize() {
+        finalizeCount += 1
+    }
+
+    func recordCleanup() {
+        cleanedCount += 1
+    }
+}
+
 @Suite struct CriteriaEvaluatorTests {
     @Test func filtersByAgeAndMediaSelection() {
         let now = Date(timeIntervalSince1970: 1_700_000_000)
@@ -84,4 +102,34 @@ import Testing
         #expect(result.map(\.id) == ["2"])
     }
 
+    @Test func uploadExecutionCoordinatorFinalizesOnlyWhenItemsExist() async throws {
+        let item = AssetDescriptor(id: "1", source: .local, filename: "item.heic", capturedAt: nil, mediaKind: .photo, sizeBytes: 10)
+        let recorder = UploadExecutionRecorder()
+
+        try await UploadExecutionCoordinator.execute(
+            items: [item],
+            exportResources: { _ in [URL(fileURLWithPath: "/tmp/item.heic")] },
+            uploadResources: { asset, _ in await recorder.recordUpload(asset.id) },
+            finalize: { await recorder.recordFinalize() },
+            cleanup: { _ in await recorder.recordCleanup() }
+        )
+
+        #expect(await recorder.uploaded == ["1"])
+        #expect(await recorder.finalizeCount == 1)
+        #expect(await recorder.cleanedCount == 1)
+
+        let emptyRecorder = UploadExecutionRecorder()
+
+        try await UploadExecutionCoordinator.execute(
+            items: [],
+            exportResources: { _ in [URL(fileURLWithPath: "/tmp/item.heic")] },
+            uploadResources: { asset, _ in await emptyRecorder.recordUpload(asset.id) },
+            finalize: { await emptyRecorder.recordFinalize() },
+            cleanup: { _ in await emptyRecorder.recordCleanup() }
+        )
+
+        #expect(await emptyRecorder.uploaded.isEmpty)
+        #expect(await emptyRecorder.finalizeCount == 0)
+        #expect(await emptyRecorder.cleanedCount == 0)
+    }
 }

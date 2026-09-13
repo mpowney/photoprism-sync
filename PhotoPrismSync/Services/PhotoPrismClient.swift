@@ -60,14 +60,14 @@ final class PhotoPrismClient {
     }
 
     func downloadOriginal(for item: AssetDescriptor, using settings: PhotoPrismServerSettings) async throws -> Data {
-        let session = try await signIn(using: settings)
+        var session = try await signIn(using: settings)
         guard let url = item.downloadURL else {
             throw PhotoPrismClientError.missingDownloadURL
         }
 
-        let request = authorizedRequest(url: url, method: "GET", session: session)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        try validate(response: response, payload: data)
+        let (data, response) = try await sendAuthorizedRequest(url: url, method: "GET", session: session)
+        session = session.updatingTokens(from: response)
+        cachedSession = session
         return data
     }
 
@@ -186,7 +186,9 @@ final class PhotoPrismClient {
 
     private func createMultipartBodyFile(for fileURLs: [URL], boundary: String) throws -> URL {
         let bodyURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        FileManager.default.createFile(atPath: bodyURL.path, contents: nil)
+        guard FileManager.default.createFile(atPath: bodyURL.path, contents: nil) else {
+            throw PhotoPrismClientError.tempFileCreationFailed
+        }
         let handle = try FileHandle(forWritingTo: bodyURL)
         defer { try? handle.close() }
 
@@ -238,6 +240,7 @@ enum PhotoPrismClientError: LocalizedError {
     case missingUserUID
     case missingDownloadURL
     case requestFailed(statusCode: Int, message: String?)
+    case tempFileCreationFailed
 
     var errorDescription: String? {
         switch self {
@@ -251,6 +254,8 @@ enum PhotoPrismClientError: LocalizedError {
             return "PhotoPrism did not return the signed-in user identifier."
         case .missingDownloadURL:
             return "A PhotoPrism photo did not include a download URL."
+        case .tempFileCreationFailed:
+            return "A temporary upload file could not be created."
         case let .requestFailed(statusCode, message):
             if let message, !message.isEmpty {
                 return "PhotoPrism request failed (\(statusCode)): \(message)"

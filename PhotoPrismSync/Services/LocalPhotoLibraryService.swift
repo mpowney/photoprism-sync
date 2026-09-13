@@ -93,7 +93,7 @@ final class LocalPhotoLibraryService {
     }
 
     func saveDownloadedAsset(data: Data, filename: String, capturedAt: Date?, mediaKind: MediaKind) async throws {
-        try await requestAccess()
+        try await requestAddOnlyAccess()
 
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let fileURL = tempDirectory.appendingPathComponent(filename)
@@ -107,6 +107,21 @@ final class LocalPhotoLibraryService {
             options.originalFilename = filename
             creationRequest.creationDate = capturedAt
             creationRequest.addResource(with: self.resourceType(for: mediaKind, filename: filename), fileURL: fileURL, options: options)
+        }
+    }
+
+    private func requestAddOnlyAccess() async throws {
+        let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+        switch status {
+        case .authorized, .limited:
+            return
+        case .notDetermined:
+            let newStatus = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+            guard newStatus == .authorized || newStatus == .limited else {
+                throw PhotoLibraryError.accessDenied
+            }
+        default:
+            throw PhotoLibraryError.accessDenied
         }
     }
 
