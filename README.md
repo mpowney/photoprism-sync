@@ -38,7 +38,7 @@ Preview and download tokens are refreshed from PhotoPrism response headers while
 
 ## Open and run
 
-1. Open `/home/runner/work/photoprism-sync/photoprism-sync/PhotoPrismSync.xcodeproj` in Xcode on macOS.
+1. Open `PhotoPrismSync.xcodeproj` in Xcode on macOS.
 2. Select an iPhone simulator or physical iPhone.
 3. Set your Apple development team if code signing is required.
 4. Build and run the `PhotoPrismSync` target.

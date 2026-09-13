@@ -82,6 +82,8 @@ final class LocalPhotoLibraryService {
     }
 
     func deleteAssets(localIdentifiers: [String]) async throws {
+        try await requestAccess()
+
         let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: localIdentifiers, options: nil)
         guard fetchResult.count > 0 else { return }
 
@@ -118,6 +120,7 @@ final class LocalPhotoLibraryService {
 
         return AssetDescriptor(
             id: asset.localIdentifier,
+            source: .local,
             filename: filename,
             capturedAt: asset.creationDate,
             mediaKind: mediaKind(for: asset),

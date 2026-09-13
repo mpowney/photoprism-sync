@@ -284,8 +284,9 @@ final class AppViewModel: ObservableObject {
     }
 
     private func cleanupTemporaryFiles(_ fileURLs: [URL]) {
-        for url in fileURLs {
-            try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+        let directories = Set(fileURLs.map { $0.deletingLastPathComponent() })
+        for directory in directories {
+            try? FileManager.default.removeItem(at: directory)
         }
     }
 

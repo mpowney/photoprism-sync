@@ -422,6 +422,7 @@ private struct RemotePhoto: Decodable {
 
         return AssetDescriptor(
             id: uid,
+            source: .remote,
             filename: filename,
             capturedAt: DateParser.parse(takenAtLocal) ?? DateParser.parse(takenAt),
             mediaKind: mediaKind,

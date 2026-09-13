@@ -42,10 +42,17 @@ private struct AssetThumbnailView: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.secondary.opacity(0.15))
 
-            if let previewURL = item.previewURL {
-                RemoteAssetThumbnailView(url: previewURL)
-            } else {
+            switch item.source {
+            case .local:
                 LocalAssetThumbnailView(localIdentifier: item.id)
+            case .remote:
+                if let previewURL = item.previewURL {
+                    RemoteAssetThumbnailView(url: previewURL)
+                } else {
+                    Image(systemName: "photo")
+                        .imageScale(.large)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }

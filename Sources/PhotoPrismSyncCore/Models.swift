@@ -105,8 +105,14 @@ public enum SyncAction: String, Codable, Identifiable, Sendable {
     public var id: String { rawValue }
 }
 
+public enum AssetSource: String, Codable, Equatable, Sendable {
+    case local
+    case remote
+}
+
 public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
     public var id: String
+    public var source: AssetSource
     public var filename: String
     public var capturedAt: Date?
     public var mediaKind: MediaKind
@@ -116,6 +122,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
 
     public init(
         id: String,
+        source: AssetSource = .local,
         filename: String,
         capturedAt: Date?,
         mediaKind: MediaKind,
@@ -124,6 +131,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         downloadURL: URL? = nil
     ) {
         self.id = id
+        self.source = source
         self.filename = filename
         self.capturedAt = capturedAt
         self.mediaKind = mediaKind
