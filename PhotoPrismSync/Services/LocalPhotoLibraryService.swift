@@ -49,9 +49,18 @@ final class LocalPhotoLibraryService {
             var didResume = false
             imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
                 let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
-                guard !didResume, !isDegraded else { return }
-                didResume = true
-                continuation.resume(returning: image)
+                let isCancelled = (info?[PHImageCancelledKey] as? Bool) ?? false
+                let error = info?[PHImageErrorKey] as? Error
+
+                guard !didResume else { return }
+
+                if let image, !isDegraded {
+                    didResume = true
+                    continuation.resume(returning: image)
+                } else if error != nil || isCancelled || !isDegraded {
+                    didResume = true
+                    continuation.resume(returning: nil)
+                }
             }
         }
     }

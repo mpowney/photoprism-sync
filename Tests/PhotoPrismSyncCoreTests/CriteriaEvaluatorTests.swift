@@ -102,6 +102,23 @@ private actor UploadExecutionRecorder {
         #expect(result.map(\.id) == ["2"])
     }
 
+
+
+    @Test func matchingDuplicatesFallsBackToAllRulesWhenDuplicateOptionsAreImplicit() {
+        let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
+        let localItems = [
+            AssetDescriptor(id: "1", source: .local, filename: "same-name.heic", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100),
+        ]
+        let remoteItems = [
+            AssetDescriptor(id: "r1", source: .remote, filename: "same-name.heic", capturedAt: nil, mediaKind: .photo, sizeBytes: 100),
+        ]
+        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: false, duplicateCriteria: [])
+
+        let result = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems, now: timestamp)
+
+        #expect(result.map(\.id) == ["1"])
+    }
+
     @Test func uploadExecutionCoordinatorFinalizesOnlyWhenItemsExist() async throws {
         let item = AssetDescriptor(id: "1", source: .local, filename: "item.heic", capturedAt: nil, mediaKind: .photo, sizeBytes: 10)
         let recorder = UploadExecutionRecorder()

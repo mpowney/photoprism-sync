@@ -10,6 +10,7 @@ struct CriteriaFormView: View {
     @Binding var criteria: SyncCriteria
     let showsAgeRule: Bool
     let duplicateMode: DuplicateMode
+    let duplicateHelpText: String?
 
     private var ageRuleEnabled: Binding<Bool> {
         Binding(
@@ -51,7 +52,7 @@ struct CriteriaFormView: View {
         case .hidden:
             EmptyView()
         case .optional:
-            Section("Duplicates") {
+            Section("Duplicates", footer: duplicateHelpText.map(Text.init)) {
                 Toggle("Avoid duplicates", isOn: avoidDuplicatesBinding)
                 if criteria.avoidDuplicates {
                     duplicateCriteriaToggles

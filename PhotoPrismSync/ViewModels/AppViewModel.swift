@@ -262,7 +262,11 @@ final class AppViewModel: ObservableObject {
 
     private func validateConfigurationIfNeeded() -> Bool {
         guard !requiresServerConfiguration || settings.isComplete else {
-            errorMessage = "Enter the PhotoPrism URL, username, and password first."
+            if currentAction == .deleteOlderThan && effectiveCriteria.avoidDuplicates {
+                errorMessage = "Configure PhotoPrism credentials to compare delete candidates against remote duplicates."
+            } else {
+                errorMessage = "Enter the PhotoPrism URL, username, and password first."
+            }
             return false
         }
         return true

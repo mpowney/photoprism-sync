@@ -15,7 +15,7 @@ final class PhotoPrismClient {
     }
 
     func sessionInfo(using settings: PhotoPrismServerSettings) async throws -> PhotoPrismSessionInfo {
-        let session = try await signIn(using: settings)
+        var session = try await signIn(using: settings)
         return PhotoPrismSessionInfo(userUID: session.userUID)
     }
 
@@ -38,7 +38,7 @@ final class PhotoPrismClient {
                 throw PhotoPrismClientError.invalidServerURL
             }
 
-            let (data, response) = try await sendAuthorizedRequest(url: url, method: "GET", session: session)
+            let (data, response) = try await sendAuthorizedRequest(url: url, method: "GET", using: settings, session: session)
             session = session.updatingTokens(from: response)
             cachedSession = session
 
@@ -65,7 +65,7 @@ final class PhotoPrismClient {
             throw PhotoPrismClientError.missingDownloadURL
         }
 
-        let (data, response) = try await sendAuthorizedRequest(url: url, method: "GET", session: session)
+        let (data, response) = try await sendAuthorizedRequest(url: url, method: "GET", using: settings, session: session)
         session = session.updatingTokens(from: response)
         cachedSession = session
         return data
@@ -77,7 +77,7 @@ final class PhotoPrismClient {
         uploadToken: String,
         using settings: PhotoPrismServerSettings
     ) async throws {
-        let session = try await signIn(using: settings)
+        var session = try await signIn(using: settings)
         let url = session.apiBaseURL
             .appendingPathComponent("users")
             .appendingPathComponent(userUID)
@@ -92,12 +92,14 @@ final class PhotoPrismClient {
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let (data, response) = try await URLSession.shared.upload(for: request, fromFile: bodyURL)
+        let (data, response) = try await sendAuthorizedUploadRequest(request: request, bodyFileURL: bodyURL, using: settings, session: session)
+        session = session.updatingTokens(from: response)
+        cachedSession = session
         try validate(response: response, payload: data)
     }
 
     func processUploadedOriginals(userUID: String, uploadToken: String, using settings: PhotoPrismServerSettings) async throws {
-        let session = try await signIn(using: settings)
+        var session = try await signIn(using: settings)
         let url = session.apiBaseURL
             .appendingPathComponent("users")
             .appendingPathComponent(userUID)
@@ -109,7 +111,9 @@ final class PhotoPrismClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let (data, response) = try await URLSession.shared.upload(for: request, from: body)
+        let (data, response) = try await sendAuthorizedUploadRequest(request: request, bodyData: body, using: settings, session: session)
+        session = session.updatingTokens(from: response)
+        cachedSession = session
         try validate(response: response, payload: data)
     }
 
@@ -163,13 +167,63 @@ final class PhotoPrismClient {
         return request
     }
 
-    private func sendAuthorizedRequest(url: URL, method: String, session: AuthenticatedPhotoPrismSession) async throws -> (Data, HTTPURLResponse) {
+    private func sendAuthorizedRequest(url: URL, method: String, using settings: PhotoPrismServerSettings, session: AuthenticatedPhotoPrismSession) async throws -> (Data, HTTPURLResponse) {
         let request = authorizedRequest(url: url, method: method, session: session)
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PhotoPrismClientError.invalidResponse
         }
+        if httpResponse.statusCode == 401 {
+            let refreshedSession = try await signIn(using: settings, forceRefresh: true)
+            let retryRequest = authorizedRequest(url: url, method: method, session: refreshedSession)
+            let (retryData, retryResponse) = try await URLSession.shared.data(for: retryRequest)
+            guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
+                throw PhotoPrismClientError.invalidResponse
+            }
+            try validate(response: retryHTTPResponse, payload: retryData)
+            return (retryData, retryHTTPResponse)
+        }
         try validate(response: httpResponse, payload: data)
+        return (data, httpResponse)
+    }
+
+    private func sendAuthorizedUploadRequest(request: URLRequest, bodyFileURL: URL, using settings: PhotoPrismServerSettings, session: AuthenticatedPhotoPrismSession) async throws -> (Data, HTTPURLResponse) {
+        let (data, response) = try await URLSession.shared.upload(for: request, fromFile: bodyFileURL)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw PhotoPrismClientError.invalidResponse
+        }
+        if httpResponse.statusCode == 401 {
+            let refreshedSession = try await signIn(using: settings, forceRefresh: true)
+            guard let requestURL = request.url else { throw PhotoPrismClientError.invalidResponse }
+            var retryRequest = authorizedRequest(url: requestURL, method: request.httpMethod ?? "POST", session: refreshedSession)
+            retryRequest.setValue(request.value(forHTTPHeaderField: "Content-Type"), forHTTPHeaderField: "Content-Type")
+            retryRequest.setValue(request.value(forHTTPHeaderField: "Accept"), forHTTPHeaderField: "Accept")
+            let (retryData, retryResponse) = try await URLSession.shared.upload(for: retryRequest, fromFile: bodyFileURL)
+            guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
+                throw PhotoPrismClientError.invalidResponse
+            }
+            return (retryData, retryHTTPResponse)
+        }
+        return (data, httpResponse)
+    }
+
+    private func sendAuthorizedUploadRequest(request: URLRequest, bodyData: Data, using settings: PhotoPrismServerSettings, session: AuthenticatedPhotoPrismSession) async throws -> (Data, HTTPURLResponse) {
+        let (data, response) = try await URLSession.shared.upload(for: request, from: bodyData)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw PhotoPrismClientError.invalidResponse
+        }
+        if httpResponse.statusCode == 401 {
+            let refreshedSession = try await signIn(using: settings, forceRefresh: true)
+            guard let requestURL = request.url else { throw PhotoPrismClientError.invalidResponse }
+            var retryRequest = authorizedRequest(url: requestURL, method: request.httpMethod ?? "PUT", session: refreshedSession)
+            retryRequest.setValue(request.value(forHTTPHeaderField: "Content-Type"), forHTTPHeaderField: "Content-Type")
+            retryRequest.setValue(request.value(forHTTPHeaderField: "Accept"), forHTTPHeaderField: "Accept")
+            let (retryData, retryResponse) = try await URLSession.shared.upload(for: retryRequest, from: bodyData)
+            guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
+                throw PhotoPrismClientError.invalidResponse
+            }
+            return (retryData, retryHTTPResponse)
+        }
         return (data, httpResponse)
     }
 
@@ -410,20 +464,16 @@ private struct RemotePhoto: Decodable {
 
         let preferredFile = files.first(where: { $0.primary == true }) ?? files.first
         let filename = preferredFile?.bestName ?? [originalName, fileName, name].first(where: { !($0 ?? "").isEmpty }) ?? uid
-        let fileHash = preferredFile?.hash ?? hash
+        guard let fileHash = preferredFile?.hash ?? hash, !fileHash.isEmpty else { return nil }
         let mediaKind = MediaKind(remoteType: type, isVideo: preferredFile?.isVideo == true)
-        let previewURL = fileHash.flatMap {
-            session.contentBaseURL
-                .appendingPathComponent("t")
-                .appendingPathComponent($0)
-                .appendingPathComponent(session.previewToken)
-                .appendingPathComponent("tile_500")
-        }
-        let downloadURL = fileHash.flatMap {
-            var components = URLComponents(url: session.apiBaseURL.appendingPathComponent("dl").appendingPathComponent($0), resolvingAgainstBaseURL: false)
-            components?.queryItems = [URLQueryItem(name: "t", value: session.downloadToken)]
-            return components?.url
-        }
+        let previewURL = session.contentBaseURL
+            .appendingPathComponent("t")
+            .appendingPathComponent(fileHash)
+            .appendingPathComponent(session.previewToken)
+            .appendingPathComponent("tile_500")
+        var components = URLComponents(url: session.apiBaseURL.appendingPathComponent("dl").appendingPathComponent(fileHash), resolvingAgainstBaseURL: false)
+        components?.queryItems = [URLQueryItem(name: "t", value: session.downloadToken)]
+        let downloadURL = components?.url
 
         return AssetDescriptor(
             id: uid,
@@ -456,7 +506,7 @@ private struct RemoteFile: Decodable {
     }
 
     var bestName: String {
-        [originalName, name].first(where: { !($0 ?? "").isEmpty }) ?? UUID().uuidString
+        [originalName, name, hash].first(where: { !($0 ?? "").isEmpty }) ?? "remote-file"
     }
 }
 
