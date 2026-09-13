@@ -119,6 +119,8 @@ final class AppViewModel: ObservableObject {
         do {
             try settingsStore.save(settings)
             noticeMessage = "PhotoPrism settings saved."
+        } catch let error as UploadExecutionCoordinatorError {
+            errorMessage = error.localizedDescription
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -261,6 +263,23 @@ final class AppViewModel: ObservableObject {
     }
 
     private func validateConfigurationIfNeeded() -> Bool {
+        let trimmedURL = settings.baseURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+        if requiresServerConfiguration || !trimmedURL.isEmpty {
+            guard !trimmedURL.isEmpty else {
+                if currentAction == .deleteOlderThan && effectiveCriteria.avoidDuplicates {
+                    errorMessage = "Configure PhotoPrism credentials to compare delete candidates against remote duplicates."
+                } else {
+                    errorMessage = "Enter the PhotoPrism URL, username, and password first."
+                }
+                return false
+            }
+
+            guard settings.normalizedBaseURL != nil else {
+                errorMessage = "Enter a valid PhotoPrism server URL."
+                return false
+            }
+        }
+
         guard !requiresServerConfiguration || settings.isComplete else {
             if currentAction == .deleteOlderThan && effectiveCriteria.avoidDuplicates {
                 errorMessage = "Configure PhotoPrism credentials to compare delete candidates against remote duplicates."

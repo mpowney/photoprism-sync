@@ -101,7 +101,7 @@ struct ContentView: View {
         .onChange(of: viewModel.criteria) { _, _ in
             viewModel.invalidateCalculation()
         }
-        .popover(isPresented: $viewModel.isShowingPreview) {
+        .sheet(isPresented: $viewModel.isShowingPreview) {
             PreviewGridView(items: viewModel.previewItems, formattedSize: viewModel.formattedSize)
         }
         .alert("Error", isPresented: errorBinding, actions: {

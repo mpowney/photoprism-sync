@@ -4,7 +4,7 @@ struct PhotoPrismSessionInfo {
     let userUID: String
 }
 
-final class PhotoPrismClient {
+actor PhotoPrismClient {
     static let shared = PhotoPrismClient()
 
     private var cachedSession: AuthenticatedPhotoPrismSession?
@@ -202,6 +202,7 @@ final class PhotoPrismClient {
             guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
                 throw PhotoPrismClientError.invalidResponse
             }
+            try validate(response: retryHTTPResponse, payload: retryData)
             return (retryData, retryHTTPResponse)
         }
         return (data, httpResponse)
@@ -222,6 +223,7 @@ final class PhotoPrismClient {
             guard let retryHTTPResponse = retryResponse as? HTTPURLResponse else {
                 throw PhotoPrismClientError.invalidResponse
             }
+            try validate(response: retryHTTPResponse, payload: retryData)
             return (retryData, retryHTTPResponse)
         }
         return (data, httpResponse)

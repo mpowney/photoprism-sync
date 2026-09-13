@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		156F168AEB9166D4BAAC9C1D /* CriteriaFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E824CF21584432497B0EDE94 /* CriteriaFormView.swift */; };
+		212110756A3FBB0BC6B479BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF80C19E0AE7BE95ACD38D37 /* Assets.xcassets */; };
 		39D90C37FDAA44979AAA7B81 /* CriteriaEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A558C20DC85EAAC7745BA /* CriteriaEvaluator.swift */; };
 		556628D1865998B8320499AF /* PhotoPrismSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB041655C481313B6D3516D1 /* PhotoPrismSyncCore.swift */; };
 		7814F9C6F8E9D9AB9333A85F /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64B33A8121B770DD0D6E732 /* KeychainStore.swift */; };
@@ -39,6 +40,7 @@
 		98FC26F363326C7CE1BB7C49 /* AppViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppViewModel.swift; path = PhotoPrismSync/ViewModels/AppViewModel.swift; sourceTree = "<group>"; };
 		C1A6D80124E285159AABF2B3 /* PhotoPrismClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismClient.swift; path = PhotoPrismSync/Services/PhotoPrismClient.swift; sourceTree = "<group>"; };
 		C64B33A8121B770DD0D6E732 /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeychainStore.swift; path = PhotoPrismSync/Services/KeychainStore.swift; sourceTree = "<group>"; };
+		CF80C19E0AE7BE95ACD38D37 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = PhotoPrismSync/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		E824CF21584432497B0EDE94 /* CriteriaFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CriteriaFormView.swift; path = PhotoPrismSync/Views/CriteriaFormView.swift; sourceTree = "<group>"; };
 		EA522BAD7852307A820B5A07 /* PhotoPrismSyncApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncApp.swift; path = PhotoPrismSync/PhotoPrismSyncApp.swift; sourceTree = "<group>"; };
 		FB041655C481313B6D3516D1 /* PhotoPrismSyncCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PhotoPrismSyncCore.swift; path = Sources/PhotoPrismSyncCore/PhotoPrismSyncCore.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				93B6256C1C853B7C143FC6EA /* Info.plist */,
+				CF80C19E0AE7BE95ACD38D37 /* Assets.xcassets */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -213,6 +216,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				212110756A3FBB0BC6B479BC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +312,7 @@
 		76534E3A06C3AAD8291F74D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
@@ -330,6 +335,7 @@
 		7841410AC12759F64EEAC343 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;

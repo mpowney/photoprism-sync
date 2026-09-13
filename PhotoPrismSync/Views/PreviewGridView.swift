@@ -80,20 +80,16 @@ private struct LocalAssetThumbnailView: View {
 
 private struct RemoteAssetThumbnailView: View {
     let url: URL
-    @StateObject private var loader: RemoteThumbnailLoader
-
-    init(url: URL) {
-        self.url = url
-        _loader = StateObject(wrappedValue: RemoteThumbnailLoader(url: url))
-    }
+    @State private var image: UIImage?
+    @State private var isLoading = false
 
     var body: some View {
         Group {
-            if let image = loader.image {
+            if let image {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-            } else if loader.isLoading {
+            } else if isLoading {
                 ProgressView()
             } else {
                 Image(systemName: "photo")
@@ -102,29 +98,11 @@ private struct RemoteAssetThumbnailView: View {
             }
         }
         .task(id: url) {
-            await loader.load()
+            await loadImage()
         }
     }
-}
 
-@MainActor
-private final class RemoteThumbnailLoader: ObservableObject {
-    @Published var image: UIImage?
-    @Published var isLoading = false
-
-    private let url: URL
-    private let session: URLSession
-
-    init(url: URL) {
-        self.url = url
-        let configuration = URLSessionConfiguration.ephemeral
-        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        configuration.urlCache = nil
-        session = URLSession(configuration: configuration)
-    }
-
-    func load() async {
-        guard image == nil, !isLoading else { return }
+    private func loadImage() async {
         isLoading = true
         defer { isLoading = false }
 
@@ -132,8 +110,12 @@ private final class RemoteThumbnailLoader: ObservableObject {
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
 
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.urlCache = nil
+
         do {
-            let (data, _) = try await session.data(for: request)
+            let (data, _) = try await URLSession(configuration: configuration).data(for: request)
             image = UIImage(data: data)
         } catch {
             image = nil
