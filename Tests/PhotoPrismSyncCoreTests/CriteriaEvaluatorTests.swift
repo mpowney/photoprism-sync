@@ -130,6 +130,44 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         #expect(result.isEmpty)
     }
 
+    @Test func matchesByChecksumRegardlessOfFilenameOrTimestamp() {
+        let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
+        let localItem = AssetDescriptor(
+            id: "1",
+            source: .local,
+            filename: "IMG_1234.HEIC",
+            capturedAt: timestamp,
+            mediaKind: .photo,
+            sizeBytes: 100,
+            checksum: "ABCDEF0123456789"
+        )
+        let remoteItem = AssetDescriptor(
+            id: "r1",
+            source: .remote,
+            filename: "2023-01-02-030405-abcdef.heic",
+            capturedAt: timestamp.addingTimeInterval(-9999),
+            mediaKind: .photo,
+            sizeBytes: 100,
+            checksum: "abcdef0123456789"
+        )
+        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
+
+        let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
+
+        #expect(result.isEmpty)
+    }
+
+    @Test func checksumCriterionNeverMatchesWhenChecksumIsMissing() {
+        let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
+        let localItem = AssetDescriptor(id: "1", source: .local, filename: "same-name.heic", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100)
+        let remoteItem = AssetDescriptor(id: "r1", source: .remote, filename: "same-name.heic", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100)
+        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
+
+        let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
+
+        #expect(result.map(\.id) == ["1"])
+    }
+
     @Test func matchingDuplicatesReturnsOnlyItemsPresentInReferenceSet() {
         let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
         let localItems = [

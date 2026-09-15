@@ -76,6 +76,9 @@ public enum CriteriaEvaluator {
                 guard let capturedAt = item.capturedAt else { return nil }
                 let seconds = Int(capturedAt.timeIntervalSince1970.rounded())
                 return "photoTimestamp:\(seconds)"
+            case .checksum:
+                guard let checksum = item.checksum?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(), !checksum.isEmpty else { return nil }
+                return "checksum:\(checksum)"
             }
         }
     }

@@ -168,13 +168,14 @@ final class AppViewModel: ObservableObject {
 
         do {
             let criteria = effectiveCriteria
+            let needsChecksum = criteria.effectiveDuplicateCriteria.contains(.checksum)
             let snapshot: CalculationSnapshot
             var remoteFetchDiagnostics: LibraryFetchResult?
             var duplicateCount = 0
 
             switch currentAction {
             case .upload:
-                let localItems = try await photoLibrary.fetchLibraryItems()
+                let localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
                 let remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
                 duplicateCount = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems).count
                 let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
@@ -186,17 +187,17 @@ final class AppViewModel: ObservableObject {
                     }
                 }
                 remoteFetchDiagnostics = fetchResult
-                let localItems = criteria.avoidDuplicates ? try await photoLibrary.fetchLibraryItems() : []
+                let localItems = criteria.avoidDuplicates ? try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum) : []
                 duplicateCount = CriteriaEvaluator.matchingDuplicates(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems).count
                 let matching = CriteriaEvaluator.filter(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems)
                 snapshot = CalculationSnapshot(action: .download, criteria: criteria, items: sorted(matching))
             case .deleteFoundInPhotoPrism:
-                let localItems = try await photoLibrary.fetchLibraryItems()
+                let localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
                 let remoteItems = try await photoPrismClient.fetchLibraryItems(using: settings)
                 let matching = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .deleteFoundInPhotoPrism, criteria: criteria, items: sorted(matching))
             case .deleteOlderThan:
-                let localItems = try await photoLibrary.fetchLibraryItems()
+                let localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
                 let remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
                 let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .deleteOlderThan, criteria: criteria, items: sorted(matching))

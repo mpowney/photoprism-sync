@@ -70,6 +70,7 @@ struct CriteriaFormView: View {
         Group {
             duplicateToggle(for: .filename, title: "By filename")
             duplicateToggle(for: .photoTimestamp, title: "By photo timestamp")
+            duplicateToggle(for: .checksum, title: "By file checksum (exact match, slower)")
         }
     }
 

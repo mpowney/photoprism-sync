@@ -43,6 +43,7 @@ public struct AgeRule: Codable, Equatable, Hashable, Sendable {
 public enum DuplicateCriterion: String, Codable, CaseIterable, Identifiable, Hashable, Sendable {
     case filename
     case photoTimestamp
+    case checksum
 
     public var id: String { rawValue }
 }
@@ -120,6 +121,8 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
     public var sizeBytes: Int64
     public var previewURL: URL?
     public var downloadURL: URL?
+    /// SHA1 of the original file's bytes; matches PhotoPrism's `Hash` field when present.
+    public var checksum: String?
 
     public init(
         id: String,
@@ -130,7 +133,8 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         mediaKind: MediaKind,
         sizeBytes: Int64,
         previewURL: URL? = nil,
-        downloadURL: URL? = nil
+        downloadURL: URL? = nil,
+        checksum: String? = nil
     ) {
         self.id = id
         self.source = source
@@ -141,6 +145,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         self.sizeBytes = sizeBytes
         self.previewURL = previewURL
         self.downloadURL = downloadURL
+        self.checksum = checksum
     }
 
     public var filenameForComparison: String {

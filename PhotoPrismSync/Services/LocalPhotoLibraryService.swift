@@ -22,15 +22,20 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
         }
     }
 
-    func fetchLibraryItems() async throws -> [AssetDescriptor] {
+    func fetchLibraryItems(needsChecksum: Bool = false) async throws -> [AssetDescriptor] {
         try await requestAccess()
 
         let fetchResult = PHAsset.fetchAssets(with: nil)
-        var items: [AssetDescriptor] = []
-        items.reserveCapacity(fetchResult.count)
-
+        var assets: [PHAsset] = []
+        assets.reserveCapacity(fetchResult.count)
         fetchResult.enumerateObjects { asset, _, _ in
-            items.append(self.descriptor(for: asset))
+            assets.append(asset)
+        }
+
+        var items: [AssetDescriptor] = []
+        items.reserveCapacity(assets.count)
+        for asset in assets {
+            items.append(await descriptor(for: asset, needsChecksum: needsChecksum))
         }
 
         return items
@@ -134,12 +139,17 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
         }
     }
 
-    private func descriptor(for asset: PHAsset) -> AssetDescriptor {
+    private func descriptor(for asset: PHAsset, needsChecksum: Bool = false) async -> AssetDescriptor {
         let resources = PHAssetResource.assetResources(for: asset)
         let primaryResource = resources.first(where: { $0.type == .fullSizePhoto || $0.type == .photo || $0.type == .video || $0.type == .pairedVideo }) ?? resources.first
         let filename = primaryResource?.originalFilename ?? asset.localIdentifier
         let size = resources.reduce(into: Int64(0)) { partialResult, resource in
             partialResult += Int64((resource.value(forKey: "fileSize") as? CLong) ?? 0)
+        }
+
+        var checksum: String?
+        if needsChecksum, let primaryResource {
+            checksum = try? await LocalChecksumCache.shared.checksum(for: asset, resource: primaryResource)
         }
 
         return AssetDescriptor(
@@ -148,7 +158,8 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
             filename: filename,
             capturedAt: asset.creationDate,
             mediaKind: mediaKind(for: asset),
-            sizeBytes: size
+            sizeBytes: size,
+            checksum: checksum
         )
     }
 

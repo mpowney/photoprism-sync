@@ -19,6 +19,7 @@
 		AE366E750B98AE6286C95AA3 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326909429EC483BA1F58BC1C /* Models.swift */; };
 		BE87B8DC623CE9755A853235 /* PhotoPrismSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA522BAD7852307A820B5A07 /* PhotoPrismSyncApp.swift */; };
 		C2BD09FCB6359283A76B6078 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE634CC962C075CEB3808B6 /* ContentView.swift */; };
+		4C1D9E2A7B3F5061829304AB /* LocalChecksumCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2E8D1C4A6B3705918273CD /* LocalChecksumCache.swift */; };
 		D32A39344B63260F2F8F05F6 /* LocalPhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A42EBD42AA9D3668628F13 /* LocalPhotoLibraryService.swift */; };
 		D5D7A54A7E01C4E18274D007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381CC38DF1E0328FA3F7F4F7 /* SettingsView.swift */; };
 		D7ADC7B6956E4B04D183A2A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA230A0491A7595C3D3495 /* Foundation.framework */; };
@@ -35,6 +36,7 @@
 		447C8CEFF039398D17F07A30 /* UploadExecutionCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadExecutionCoordinator.swift; path = Sources/PhotoPrismSyncCore/UploadExecutionCoordinator.swift; sourceTree = "<group>"; };
 		6E90B07DCCAEC4747839CF30 /* PhotoPrismSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoPrismSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75A42EBD42AA9D3668628F13 /* LocalPhotoLibraryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalPhotoLibraryService.swift; path = PhotoPrismSync/Services/LocalPhotoLibraryService.swift; sourceTree = "<group>"; };
+		9F2E8D1C4A6B3705918273CD /* LocalChecksumCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalChecksumCache.swift; path = PhotoPrismSync/Services/LocalChecksumCache.swift; sourceTree = "<group>"; };
 		86AA230A0491A7595C3D3495 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		93B6256C1C853B7C143FC6EA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = PhotoPrismSync/Resources/Info.plist; sourceTree = "<group>"; };
 		98FC26F363326C7CE1BB7C49 /* AppViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppViewModel.swift; path = PhotoPrismSync/ViewModels/AppViewModel.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			children = (
 				1AA335C49B2EEB95FACF1312 /* AppSettingsStore.swift */,
 				C64B33A8121B770DD0D6E732 /* KeychainStore.swift */,
+				9F2E8D1C4A6B3705918273CD /* LocalChecksumCache.swift */,
 				75A42EBD42AA9D3668628F13 /* LocalPhotoLibraryService.swift */,
 				C1A6D80124E285159AABF2B3 /* PhotoPrismClient.swift */,
 			);
@@ -235,6 +238,7 @@
 				C2BD09FCB6359283A76B6078 /* ContentView.swift in Sources */,
 				EDE482373EC346B2680B9357 /* AppSettingsStore.swift in Sources */,
 				7814F9C6F8E9D9AB9333A85F /* KeychainStore.swift in Sources */,
+				4C1D9E2A7B3F5061829304AB /* LocalChecksumCache.swift in Sources */,
 				D32A39344B63260F2F8F05F6 /* LocalPhotoLibraryService.swift in Sources */,
 				8C5B1DBE48256FA74429682F /* PhotoPrismClient.swift in Sources */,
 				94CBBDD86218FC1528DB4DDF /* AppViewModel.swift in Sources */,

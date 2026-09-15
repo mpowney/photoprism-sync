@@ -518,7 +518,8 @@ private struct RemotePhoto: Decodable {
             mediaKind: mediaKind,
             sizeBytes: Int64(preferredFile?.size ?? 0),
             previewURL: previewURL,
-            downloadURL: downloadURL
+            downloadURL: downloadURL,
+            checksum: fileHash
         )
     }
 }
