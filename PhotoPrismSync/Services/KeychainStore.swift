@@ -15,7 +15,7 @@ enum KeychainStoreError: LocalizedError {
     }
 }
 
-final class KeychainStore {
+final class KeychainStore: @unchecked Sendable {
     func string(forKey key: String, service: String) throws -> String? {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,

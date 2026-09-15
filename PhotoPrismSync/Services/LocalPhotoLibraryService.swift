@@ -2,7 +2,7 @@ import Foundation
 import Photos
 import UIKit
 
-final class LocalPhotoLibraryService {
+final class LocalPhotoLibraryService: @unchecked Sendable {
     static let shared = LocalPhotoLibraryService()
 
     private let imageManager = PHCachingImageManager()
@@ -183,7 +183,7 @@ final class LocalPhotoLibraryService {
     }
 
     private func write(resource: PHAssetResource, to url: URL) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: nil) { error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -194,8 +194,8 @@ final class LocalPhotoLibraryService {
         }
     }
 
-    private func performPhotoLibraryChanges(_ changeBlock: @escaping () -> Void) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+    private func performPhotoLibraryChanges(_ changeBlock: @escaping @Sendable () -> Void) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             PHPhotoLibrary.shared().performChanges(changeBlock) { success, error in
                 if let error {
                     continuation.resume(throwing: error)

@@ -24,7 +24,7 @@ struct PhotoPrismServerSettings: Equatable {
     }
 }
 
-final class AppSettingsStore {
+final class AppSettingsStore: @unchecked Sendable {
     static let shared = AppSettingsStore()
 
     private enum Keys {

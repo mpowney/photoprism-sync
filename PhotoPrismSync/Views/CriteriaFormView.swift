@@ -52,7 +52,7 @@ struct CriteriaFormView: View {
         case .hidden:
             EmptyView()
         case .optional:
-            Section("Duplicates", footer: duplicateHelpText.map(Text.init)) {
+            Section(header: Text("Duplicates"), footer: duplicateHelpText.map(Text.init)) {
                 Toggle("Avoid duplicates", isOn: avoidDuplicatesBinding)
                 if criteria.avoidDuplicates {
                     duplicateCriteriaToggles

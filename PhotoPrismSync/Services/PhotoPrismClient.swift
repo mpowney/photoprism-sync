@@ -4,6 +4,14 @@ struct PhotoPrismSessionInfo {
     let userUID: String
 }
 
+/// Fetch diagnostics so callers can tell pagination shortfalls apart from decode drops or criteria filtering.
+struct LibraryFetchResult {
+    let items: [AssetDescriptor]
+    let rawDecodedCount: Int
+    let droppedCount: Int
+    let pageCount: Int
+}
+
 actor PhotoPrismClient {
     static let shared = PhotoPrismClient()
 
@@ -15,17 +23,28 @@ actor PhotoPrismClient {
     }
 
     func sessionInfo(using settings: PhotoPrismServerSettings) async throws -> PhotoPrismSessionInfo {
-        var session = try await signIn(using: settings)
+        let session = try await signIn(using: settings)
         return PhotoPrismSessionInfo(userUID: session.userUID)
     }
 
     func fetchLibraryItems(using settings: PhotoPrismServerSettings) async throws -> [AssetDescriptor] {
+        try await fetchLibraryItemsWithDiagnostics(using: settings).items
+    }
+
+    func fetchLibraryItemsWithDiagnostics(
+        using settings: PhotoPrismServerSettings,
+        onPageFetched: (@Sendable (_ pageCount: Int, _ rawDecodedCount: Int) -> Void)? = nil
+    ) async throws -> LibraryFetchResult {
         var session = try await signIn(using: settings)
         let pageSize = 500
+        // Safety cap to avoid an unbounded loop if the server never returns an empty page.
+        let maxPages = 2000
         var offset = 0
         var items: [AssetDescriptor] = []
+        var rawDecodedCount = 0
+        var pageCount = 0
 
-        while true {
+        while pageCount < maxPages {
             var components = URLComponents(url: session.apiBaseURL.appendingPathComponent("photos"), resolvingAgainstBaseURL: false)
             components?.queryItems = [
                 URLQueryItem(name: "count", value: String(pageSize)),
@@ -47,16 +66,23 @@ actor PhotoPrismClient {
                 break
             }
 
+            pageCount += 1
+            rawDecodedCount += photos.count
             items.append(contentsOf: photos.compactMap { $0.assetDescriptor(using: session) })
+            onPageFetched?(pageCount, rawDecodedCount)
 
-            if photos.count < pageSize {
-                break
-            }
-
+            // Advance by the requested page size, not the returned count: the server may filter
+            // hidden/archived items out of the response after applying offset/limit, so a short
+            // page here doesn't necessarily mean we've reached the end of the library.
             offset += pageSize
         }
 
-        return items
+        return LibraryFetchResult(
+            items: items,
+            rawDecodedCount: rawDecodedCount,
+            droppedCount: rawDecodedCount - items.count,
+            pageCount: pageCount
+        )
     }
 
     func downloadOriginal(for item: AssetDescriptor, using settings: PhotoPrismServerSettings) async throws -> Data {
@@ -469,7 +495,7 @@ private struct RemotePhoto: Decodable {
         guard let uid, !uid.isEmpty else { return nil }
 
         let preferredFile = files.first(where: { $0.primary == true }) ?? files.first
-        let filename = preferredFile?.bestName ?? [originalName, fileName, name].first(where: { !($0 ?? "").isEmpty }) ?? uid
+        let filename = preferredFile?.bestName ?? [originalName, fileName, name].compactMap { $0 }.first(where: { !$0.isEmpty }) ?? uid
         guard let fileHash = preferredFile?.hash ?? hash, !fileHash.isEmpty else { return nil }
         let mediaKind = MediaKind(remoteType: type, isVideo: preferredFile?.isVideo == true)
         let previewURL = session.contentBaseURL
@@ -512,20 +538,20 @@ private struct RemoteFile: Decodable {
     }
 
     var bestName: String {
-        [originalName, name, hash].first(where: { !($0 ?? "").isEmpty }) ?? "remote-file"
+        [originalName, name, hash].compactMap { $0 }.first(where: { !$0.isEmpty }) ?? "remote-file"
     }
 }
 
 private enum DateParser {
-    static let iso8601Fractional: ISO8601DateFormatter = {
+    nonisolated(unsafe) private static let iso8601Fractional: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return formatter
     }()
 
-    static let iso8601Standard = ISO8601DateFormatter()
+    nonisolated(unsafe) private static let iso8601Standard = ISO8601DateFormatter()
 
-    static let localFormatters: [DateFormatter] = {
+    private static let localFormatters: [DateFormatter] = {
         ["yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss"].map { format in
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")

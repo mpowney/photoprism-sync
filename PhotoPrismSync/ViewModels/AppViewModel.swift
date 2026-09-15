@@ -33,6 +33,12 @@ final class AppViewModel: ObservableObject {
         }
     }
 
+    enum ConnectionStatus: Equatable {
+        case testing
+        case success(String)
+        case failure(String)
+    }
+
     @Published var settings: PhotoPrismServerSettings
     @Published var selectedAction: PrimaryAction = .upload
     @Published var deleteMode: DeleteMode = .foundInPhotoPrism
@@ -40,6 +46,8 @@ final class AppViewModel: ObservableObject {
     @Published var calculationSnapshot: CalculationSnapshot?
     @Published var isCalculating = false
     @Published var isExecuting = false
+    @Published var isTestingConnection = false
+    @Published var connectionStatus: ConnectionStatus?
     @Published var progressMessage = ""
     @Published var completedItems = 0
     @Published var totalItems = 0
@@ -125,11 +133,20 @@ final class AppViewModel: ObservableObject {
     }
 
     func testConnection() async {
+        guard !isTestingConnection else { return }
+        isTestingConnection = true
+        connectionStatus = .testing
+        defer { isTestingConnection = false }
+
         do {
             try await photoPrismClient.validateConnection(using: settings)
-            noticeMessage = "Successfully signed in to PhotoPrism."
+            let message = "Successfully signed in to PhotoPrism."
+            connectionStatus = .success(message)
+            noticeMessage = message
         } catch {
-            errorMessage = error.localizedDescription
+            let message = error.localizedDescription
+            connectionStatus = .failure(message)
+            errorMessage = message
         }
     }
 
@@ -138,6 +155,7 @@ final class AppViewModel: ObservableObject {
         completedItems = 0
         totalItems = 0
         progressMessage = ""
+        connectionStatus = nil
     }
 
     func calculateSelection() async {
@@ -151,6 +169,7 @@ final class AppViewModel: ObservableObject {
         do {
             let criteria = effectiveCriteria
             let snapshot: CalculationSnapshot
+            var remoteFetchDiagnostics: LibraryFetchResult?
 
             switch currentAction {
             case .upload:
@@ -159,9 +178,14 @@ final class AppViewModel: ObservableObject {
                 let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .upload, criteria: criteria, items: sorted(matching))
             case .download:
-                let remoteItems = try await photoPrismClient.fetchLibraryItems(using: settings)
+                let fetchResult = try await photoPrismClient.fetchLibraryItemsWithDiagnostics(using: settings) { [weak self] pageCount, rawDecodedCount in
+                    Task { @MainActor in
+                        self?.progressMessage = "Fetching from server… \(rawDecodedCount) found across \(pageCount) page(s)…"
+                    }
+                }
+                remoteFetchDiagnostics = fetchResult
                 let localItems = criteria.avoidDuplicates ? try await photoLibrary.fetchLibraryItems() : []
-                let matching = CriteriaEvaluator.filter(sourceItems: remoteItems, criteria: criteria, duplicateReferenceItems: localItems)
+                let matching = CriteriaEvaluator.filter(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems)
                 snapshot = CalculationSnapshot(action: .download, criteria: criteria, items: sorted(matching))
             case .deleteFoundInPhotoPrism:
                 let localItems = try await photoLibrary.fetchLibraryItems()
@@ -178,7 +202,12 @@ final class AppViewModel: ObservableObject {
             calculationSnapshot = snapshot
             totalItems = snapshot.summary.itemCount
             completedItems = 0
-            progressMessage = snapshot.summary.itemCount == 0 ? "No matching items found." : "Calculated \(snapshot.summary.itemCount) matching items."
+            if let fetchResult = remoteFetchDiagnostics {
+                let dropNote = fetchResult.droppedCount > 0 ? ", \(fetchResult.droppedCount) skipped (missing ID/hash)" : ""
+                progressMessage = "Fetched \(fetchResult.rawDecodedCount) from server across \(fetchResult.pageCount) page(s)\(dropNote); \(snapshot.summary.itemCount) match your criteria."
+            } else {
+                progressMessage = snapshot.summary.itemCount == 0 ? "No matching items found." : "Calculated \(snapshot.summary.itemCount) matching items."
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -223,24 +252,24 @@ final class AppViewModel: ObservableObject {
         try await UploadExecutionCoordinator.execute(
             items: snapshot.items,
             exportResources: { item in
-                progressMessage = "Uploading \(item.filename)…"
-                return try await photoLibrary.exportOriginalResources(forLocalIdentifier: item.id)
+                await MainActor.run { self.progressMessage = "Uploading \(item.filename)…" }
+                return try await self.photoLibrary.exportOriginalResources(forLocalIdentifier: item.id)
             },
             uploadResources: { item, fileURLs in
-                try await photoPrismClient.uploadOriginals(
+                try await self.photoPrismClient.uploadOriginals(
                     fileURLs: fileURLs,
                     userUID: sessionInfo.userUID,
                     uploadToken: uploadToken,
                     using: settings
                 )
-                completedItems += 1
+                await MainActor.run { self.completedItems += 1 }
             },
             finalize: {
-                progressMessage = "Finalizing PhotoPrism import…"
-                try await photoPrismClient.processUploadedOriginals(userUID: sessionInfo.userUID, uploadToken: uploadToken, using: settings)
+                await MainActor.run { self.progressMessage = "Finalizing PhotoPrism import…" }
+                try await self.photoPrismClient.processUploadedOriginals(userUID: sessionInfo.userUID, uploadToken: uploadToken, using: settings)
             },
             cleanup: { fileURLs in
-                cleanupTemporaryFiles(fileURLs)
+                self.cleanupTemporaryFiles(fileURLs)
             }
         )
     }
@@ -312,7 +341,7 @@ final class AppViewModel: ObservableObject {
         return videoExtensions.contains(fileExtension) ? .video : .photo
     }
 
-    private func cleanupTemporaryFiles(_ fileURLs: [URL]) {
+    nonisolated private func cleanupTemporaryFiles(_ fileURLs: [URL]) {
         let directories = Set(fileURLs.map { $0.deletingLastPathComponent() })
         for directory in directories {
             try? FileManager.default.removeItem(at: directory)
