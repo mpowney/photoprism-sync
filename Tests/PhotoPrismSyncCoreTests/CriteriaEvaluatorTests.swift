@@ -111,6 +111,25 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         #expect(result.isEmpty)
     }
 
+    @Test func matchesRemoteItemsByPhotoPrismOriginalFilename() {
+        let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
+        let localItem = AssetDescriptor(id: "1", source: .local, filename: "IMG_1234.HEIC", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100)
+        let remoteItem = AssetDescriptor(
+            id: "r1",
+            source: .remote,
+            filename: "2023-01-02-030405-abcdef.heic",
+            originalFilename: "img_1234.heic",
+            capturedAt: nil,
+            mediaKind: .photo,
+            sizeBytes: 100
+        )
+        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.filename])
+
+        let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
+
+        #expect(result.isEmpty)
+    }
+
     @Test func matchingDuplicatesReturnsOnlyItemsPresentInReferenceSet() {
         let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
         let localItems = [

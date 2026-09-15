@@ -114,6 +114,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
     public var id: String
     public var source: AssetSource
     public var filename: String
+    public var originalFilename: String?
     public var capturedAt: Date?
     public var mediaKind: MediaKind
     public var sizeBytes: Int64
@@ -124,6 +125,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         id: String,
         source: AssetSource = .local,
         filename: String,
+        originalFilename: String? = nil,
         capturedAt: Date?,
         mediaKind: MediaKind,
         sizeBytes: Int64,
@@ -133,11 +135,16 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         self.id = id
         self.source = source
         self.filename = filename
+        self.originalFilename = originalFilename
         self.capturedAt = capturedAt
         self.mediaKind = mediaKind
         self.sizeBytes = sizeBytes
         self.previewURL = previewURL
         self.downloadURL = downloadURL
+    }
+
+    public var filenameForComparison: String {
+        originalFilename ?? filename
     }
 }
 

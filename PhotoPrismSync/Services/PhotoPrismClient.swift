@@ -511,6 +511,9 @@ private struct RemotePhoto: Decodable {
             id: uid,
             source: .remote,
             filename: filename,
+            originalFilename: [originalName, preferredFile?.originalName]
+                .compactMap { $0 }
+                .first(where: { !$0.isEmpty }),
             capturedAt: DateParser.parse(takenAt) ?? DateParser.parse(takenAtLocal),
             mediaKind: mediaKind,
             sizeBytes: Int64(preferredFile?.size ?? 0),

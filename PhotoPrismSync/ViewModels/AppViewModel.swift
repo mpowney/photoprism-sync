@@ -170,11 +170,13 @@ final class AppViewModel: ObservableObject {
             let criteria = effectiveCriteria
             let snapshot: CalculationSnapshot
             var remoteFetchDiagnostics: LibraryFetchResult?
+            var duplicateCount = 0
 
             switch currentAction {
             case .upload:
                 let localItems = try await photoLibrary.fetchLibraryItems()
                 let remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
+                duplicateCount = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems).count
                 let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .upload, criteria: criteria, items: sorted(matching))
             case .download:
@@ -185,6 +187,7 @@ final class AppViewModel: ObservableObject {
                 }
                 remoteFetchDiagnostics = fetchResult
                 let localItems = criteria.avoidDuplicates ? try await photoLibrary.fetchLibraryItems() : []
+                duplicateCount = CriteriaEvaluator.matchingDuplicates(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems).count
                 let matching = CriteriaEvaluator.filter(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems)
                 snapshot = CalculationSnapshot(action: .download, criteria: criteria, items: sorted(matching))
             case .deleteFoundInPhotoPrism:
@@ -204,7 +207,12 @@ final class AppViewModel: ObservableObject {
             completedItems = 0
             if let fetchResult = remoteFetchDiagnostics {
                 let dropNote = fetchResult.droppedCount > 0 ? ", \(fetchResult.droppedCount) skipped (missing ID/hash)" : ""
-                progressMessage = "Fetched \(fetchResult.rawDecodedCount) from server across \(fetchResult.pageCount) page(s)\(dropNote); \(snapshot.summary.itemCount) match your criteria."
+                let duplicateNote = criteria.avoidDuplicates ? " There are \(duplicateCount) duplicates that will not be downloaded." : ""
+                progressMessage = "Fetched \(fetchResult.rawDecodedCount) from server across \(fetchResult.pageCount) page(s)\(dropNote); \(snapshot.summary.itemCount) match your criteria.\(duplicateNote)"
+            } else if snapshot.action == .upload {
+                progressMessage = "Calculated \(snapshot.summary.itemCount) matching items. There are \(duplicateCount) duplicates that will not be uploaded."
+            } else if snapshot.action == .deleteFoundInPhotoPrism || snapshot.action == .deleteOlderThan {
+                progressMessage = "Calculated \(snapshot.summary.itemCount) matching items that will be deleted from your iPhone."
             } else {
                 progressMessage = snapshot.summary.itemCount == 0 ? "No matching items found." : "Calculated \(snapshot.summary.itemCount) matching items."
             }

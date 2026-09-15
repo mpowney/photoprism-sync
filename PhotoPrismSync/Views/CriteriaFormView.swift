@@ -11,6 +11,7 @@ struct CriteriaFormView: View {
     let showsAgeRule: Bool
     let duplicateMode: DuplicateMode
     let duplicateHelpText: String?
+    let sectionTitle: String
 
     private var ageRuleEnabled: Binding<Bool> {
         Binding(
@@ -26,7 +27,7 @@ struct CriteriaFormView: View {
     }
 
     var body: some View {
-        Section("What to include") {
+        Section(sectionTitle) {
             if showsAgeRule {
                 Toggle("Only include items older than…", isOn: ageRuleEnabled)
 

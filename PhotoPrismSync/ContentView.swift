@@ -28,7 +28,8 @@ struct ContentView: View {
                         criteria: $viewModel.criteria,
                         showsAgeRule: viewModel.currentAction != .deleteFoundInPhotoPrism,
                         duplicateMode: viewModel.currentAction == .deleteFoundInPhotoPrism ? .required : .optional,
-                        duplicateHelpText: viewModel.selectedAction == .delete && viewModel.deleteMode == .olderThan ? "When enabled, duplicate checks compare your local library against PhotoPrism and require server credentials." : nil
+                        duplicateHelpText: viewModel.selectedAction == .delete && viewModel.deleteMode == .olderThan ? "When enabled, duplicate checks compare your local library against PhotoPrism and require server credentials." : nil,
+                        sectionTitle: viewModel.selectedAction == .delete ? "What to delete" : "What to include"
                     )
 
                     if let snapshot = viewModel.calculationSnapshot {

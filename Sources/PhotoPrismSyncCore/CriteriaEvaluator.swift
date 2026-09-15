@@ -70,7 +70,7 @@ public enum CriteriaEvaluator {
         criteria.compactMap { criterion in
             switch criterion {
             case .filename:
-                let name = item.filename.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let name = item.filenameForComparison.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                 return name.isEmpty ? nil : "filename:\(name)"
             case .photoTimestamp:
                 guard let capturedAt = item.capturedAt else { return nil }
