@@ -147,9 +147,11 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
             partialResult += Int64((resource.value(forKey: "fileSize") as? CLong) ?? 0)
         }
 
-        var checksum: String?
-        if needsChecksum, let primaryResource {
-            checksum = try? await LocalChecksumCache.shared.checksum(for: asset, resource: primaryResource)
+        var checksums: Set<String> = []
+        if needsChecksum, let primaryResource,
+           let checksum = try? await LocalChecksumCache.shared.checksum(for: asset, resource: primaryResource)
+        {
+            checksums = [checksum]
         }
 
         return AssetDescriptor(
@@ -159,7 +161,7 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
             capturedAt: asset.creationDate,
             mediaKind: mediaKind(for: asset),
             sizeBytes: size,
-            checksum: checksum
+            checksums: checksums
         )
     }
 

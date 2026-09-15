@@ -77,6 +77,15 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         #expect(result == [oldPhoto])
     }
 
+    @Test func defaultCriteriaEnableDuplicateAndChecksumChecksWithoutAgeRule() {
+        let criteria = SyncCriteria()
+
+        #expect(criteria.ageRule == nil)
+        #expect(criteria.avoidDuplicates)
+        #expect(criteria.duplicateCriteria == Set(DuplicateCriterion.allCases))
+        #expect(criteria.duplicateCriteria.contains(.checksum))
+    }
+
     @Test func excludesDuplicatesWhenAnySelectedCriterionMatches() {
         let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
         let localItems = [
@@ -139,7 +148,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
             capturedAt: timestamp,
             mediaKind: .photo,
             sizeBytes: 100,
-            checksum: "ABCDEF0123456789"
+            checksums: ["ABCDEF0123456789"]
         )
         let remoteItem = AssetDescriptor(
             id: "r1",
@@ -148,7 +157,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
             capturedAt: timestamp.addingTimeInterval(-9999),
             mediaKind: .photo,
             sizeBytes: 100,
-            checksum: "abcdef0123456789"
+            checksums: ["abcdef0123456789"]
         )
         let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
 
@@ -166,6 +175,35 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
 
         #expect(result.map(\.id) == ["1"])
+    }
+
+    @Test func matchesByChecksumEvenWhenOnlyANonPrimaryFileHashMatches() {
+        // PhotoPrism marks the converted JPEG preview as primary for non-JPEG originals (e.g. HEIC),
+        // so the true original's hash only shows up among the photo's other file hashes.
+        let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
+        let localItem = AssetDescriptor(
+            id: "1",
+            source: .local,
+            filename: "IMG_1234.HEIC",
+            capturedAt: timestamp,
+            mediaKind: .photo,
+            sizeBytes: 100,
+            checksums: ["originalhash123"]
+        )
+        let remoteItem = AssetDescriptor(
+            id: "r1",
+            source: .remote,
+            filename: "2023-01-02-030405-previewhash456.jpg",
+            capturedAt: timestamp.addingTimeInterval(-9999),
+            mediaKind: .photo,
+            sizeBytes: 100,
+            checksums: ["previewhash456", "originalhash123"]
+        )
+        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
+
+        let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
+
+        #expect(result.isEmpty)
     }
 
     @Test func matchingDuplicatesReturnsOnlyItemsPresentInReferenceSet() {

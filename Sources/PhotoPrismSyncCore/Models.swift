@@ -80,10 +80,10 @@ public struct SyncCriteria: Codable, Equatable, Sendable {
     public var duplicateCriteria: Set<DuplicateCriterion>
 
     public init(
-        ageRule: AgeRule? = AgeRule(),
+        ageRule: AgeRule? = nil,
         mediaSelection: MediaSelection = .all,
-        avoidDuplicates: Bool = false,
-        duplicateCriteria: Set<DuplicateCriterion> = []
+        avoidDuplicates: Bool = true,
+        duplicateCriteria: Set<DuplicateCriterion> = Set(DuplicateCriterion.allCases)
     ) {
         self.ageRule = ageRule
         self.mediaSelection = mediaSelection
@@ -121,8 +121,10 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
     public var sizeBytes: Int64
     public var previewURL: URL?
     public var downloadURL: URL?
-    /// SHA1 of the original file's bytes; matches PhotoPrism's `Hash` field when present.
-    public var checksum: String?
+    /// SHA1 hash(es) of the underlying file(s); matches PhotoPrism's per-file `Hash`.
+    /// PhotoPrism stores the original plus a converted JPEG preview as separate files with different
+    /// hashes for non-JPEG originals (e.g. HEIC/RAW), so remote items may carry more than one value.
+    public var checksums: Set<String>
 
     public init(
         id: String,
@@ -134,7 +136,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         sizeBytes: Int64,
         previewURL: URL? = nil,
         downloadURL: URL? = nil,
-        checksum: String? = nil
+        checksums: Set<String> = []
     ) {
         self.id = id
         self.source = source
@@ -145,7 +147,7 @@ public struct AssetDescriptor: Identifiable, Codable, Equatable, Sendable {
         self.sizeBytes = sizeBytes
         self.previewURL = previewURL
         self.downloadURL = downloadURL
-        self.checksum = checksum
+        self.checksums = checksums
     }
 
     public var filenameForComparison: String {

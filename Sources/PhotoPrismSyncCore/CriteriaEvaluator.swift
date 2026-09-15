@@ -67,18 +67,20 @@ public enum CriteriaEvaluator {
         for item: AssetDescriptor,
         criteria: Set<DuplicateCriterion>
     ) -> [String] {
-        criteria.compactMap { criterion in
+        criteria.flatMap { criterion -> [String] in
             switch criterion {
             case .filename:
                 let name = item.filenameForComparison.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-                return name.isEmpty ? nil : "filename:\(name)"
+                return name.isEmpty ? [] : ["filename:\(name)"]
             case .photoTimestamp:
-                guard let capturedAt = item.capturedAt else { return nil }
+                guard let capturedAt = item.capturedAt else { return [] }
                 let seconds = Int(capturedAt.timeIntervalSince1970.rounded())
-                return "photoTimestamp:\(seconds)"
+                return ["photoTimestamp:\(seconds)"]
             case .checksum:
-                guard let checksum = item.checksum?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(), !checksum.isEmpty else { return nil }
-                return "checksum:\(checksum)"
+                return item.checksums.compactMap { checksum in
+                    let trimmed = checksum.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                    return trimmed.isEmpty ? nil : "checksum:\(trimmed)"
+                }
             }
         }
     }

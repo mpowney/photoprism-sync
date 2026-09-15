@@ -507,6 +507,10 @@ private struct RemotePhoto: Decodable {
         components?.queryItems = [URLQueryItem(name: "t", value: session.downloadToken)]
         let downloadURL = components?.url
 
+        // Non-JPEG/PNG originals (HEIC, RAW, ...) get a converted preview stored as a separate,
+        // primary file with its own hash, so the true original's hash lives on a different entry.
+        let allHashes = Set((files.map(\.hash) + [hash]).compactMap { $0 }.filter { !$0.isEmpty })
+
         return AssetDescriptor(
             id: uid,
             source: .remote,
@@ -519,7 +523,7 @@ private struct RemotePhoto: Decodable {
             sizeBytes: Int64(preferredFile?.size ?? 0),
             previewURL: previewURL,
             downloadURL: downloadURL,
-            checksum: fileHash
+            checksums: allHashes
         )
     }
 }
