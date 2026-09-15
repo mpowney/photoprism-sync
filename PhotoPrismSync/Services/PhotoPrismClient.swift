@@ -495,15 +495,17 @@ private struct RemotePhoto: Decodable {
         guard let uid, !uid.isEmpty else { return nil }
 
         let preferredFile = files.first(where: { $0.primary == true }) ?? files.first
-        let filename = preferredFile?.bestName ?? [originalName, fileName, name].compactMap { $0 }.first(where: { !$0.isEmpty }) ?? uid
-        guard let fileHash = preferredFile?.hash ?? hash, !fileHash.isEmpty else { return nil }
-        let mediaKind = MediaKind(remoteType: type, isVideo: preferredFile?.isVideo == true)
+        let originalFile = files.first(where: { $0.primary != true }) ?? preferredFile
+        let filename = originalFile?.bestName ?? [originalName, fileName, name].compactMap { $0 }.first(where: { !$0.isEmpty }) ?? uid
+        guard let originalHash = originalFile?.hash ?? hash, !originalHash.isEmpty else { return nil }
+        let mediaKind = MediaKind(remoteType: type, isVideo: originalFile?.isVideo == true)
+        guard let previewHash = preferredFile?.hash ?? hash, !previewHash.isEmpty else { return nil }
         let previewURL = session.contentBaseURL
             .appendingPathComponent("t")
-            .appendingPathComponent(fileHash)
+            .appendingPathComponent(previewHash)
             .appendingPathComponent(session.previewToken)
             .appendingPathComponent("tile_500")
-        var components = URLComponents(url: session.apiBaseURL.appendingPathComponent("dl").appendingPathComponent(fileHash), resolvingAgainstBaseURL: false)
+        var components = URLComponents(url: session.apiBaseURL.appendingPathComponent("dl").appendingPathComponent(originalHash), resolvingAgainstBaseURL: false)
         components?.queryItems = [URLQueryItem(name: "t", value: session.downloadToken)]
         let downloadURL = components?.url
 
@@ -515,12 +517,12 @@ private struct RemotePhoto: Decodable {
             id: uid,
             source: .remote,
             filename: filename,
-            originalFilename: [originalName, preferredFile?.originalName]
+            originalFilename: [originalFile?.originalName, originalName]
                 .compactMap { $0 }
                 .first(where: { !$0.isEmpty }),
             capturedAt: DateParser.parse(takenAt) ?? DateParser.parse(takenAtLocal),
             mediaKind: mediaKind,
-            sizeBytes: Int64(preferredFile?.size ?? 0),
+            sizeBytes: Int64(originalFile?.size ?? 0),
             previewURL: previewURL,
             downloadURL: downloadURL,
             checksums: allHashes

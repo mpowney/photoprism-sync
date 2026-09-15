@@ -110,9 +110,16 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
         try await requestAddOnlyAccess()
 
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        let fileURL = tempDirectory.appendingPathComponent(filename)
+        var fileURL = tempDirectory.appendingPathComponent(filename)
         try FileManager.default.createDirectory(at: tempDirectory, withIntermediateDirectories: true, attributes: nil)
         try data.write(to: fileURL, options: .atomic)
+        if let capturedAt {
+            var resourceValues = URLResourceValues()
+            resourceValues.creationDate = capturedAt
+            resourceValues.contentModificationDate = capturedAt
+            try fileURL.setResourceValues(resourceValues)
+        }
+        let fileURLForImport = fileURL
         defer { try? FileManager.default.removeItem(at: tempDirectory) }
 
         try await performPhotoLibraryChanges {
@@ -120,7 +127,7 @@ final class LocalPhotoLibraryService: @unchecked Sendable {
             let options = PHAssetResourceCreationOptions()
             options.originalFilename = filename
             creationRequest.creationDate = capturedAt
-            creationRequest.addResource(with: self.resourceType(for: mediaKind, filename: filename), fileURL: fileURL, options: options)
+            creationRequest.addResource(with: self.resourceType(for: mediaKind, filename: filename), fileURL: fileURLForImport, options: options)
         }
     }
 
