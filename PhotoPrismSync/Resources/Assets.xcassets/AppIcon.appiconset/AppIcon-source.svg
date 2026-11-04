@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#06245c" flood-opacity=".38"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" fill="#0f5cc0"/>
+  <g filter="url(#shadow)" transform="translate(512 472)">
+    <path d="M0-294 255-147 104-60z" fill="#f6c744"/>
+    <path d="M255-147v294L104 60z" fill="#ef7e41"/>
+    <path d="M255 147 0 294 0 120z" fill="#e84b79"/>
+    <path d="M0 294-255 147-104 60z" fill="#9d4dba"/>
+    <path d="M-255 147v-294L-104-60z" fill="#38a85b"/>
+    <path d="M-255-147 0-294 0-120z" fill="#33a9d6"/>
+    <circle r="115" fill="#123f87"/>
+    <circle r="55" fill="#e9f4ff"/>
+  </g>
+  <g filter="url(#shadow)" transform="translate(728 738)">
+    <circle r="185" fill="#f8fbff"/>
+    <circle r="169" fill="#123f87"/>
+    <path d="M60-85a107 107 0 0 0-141-7l-27-27v76h76l-29-29a72 72 0 0 1 97 4 18 18 0 0 0 25 3 18 18 0 0 0-1-20z" fill="#f8fbff"/>
+    <path d="M-60 85a107 107 0 0 0 141 7l27 27v-76H32l29 29a72 72 0 0 1-97-4 18 18 0 0 0-25-3 18 18 0 0 0 1 20z" fill="#f8fbff"/>
+  </g>
+</svg>
