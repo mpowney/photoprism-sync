@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 @MainActor
 final class AppViewModel: ObservableObject {
@@ -222,9 +223,14 @@ final class AppViewModel: ObservableObject {
         }
     }
 
-    func executeCalculatedSelection() async {
+    func executeCalculatedSelection(items selectedItems: [AssetDescriptor]? = nil) async {
         guard !isCalculating, !isExecuting else { return }
-        guard let snapshot = calculationSnapshot else { return }
+        guard let calculatedSnapshot = calculationSnapshot else { return }
+        var snapshot = calculatedSnapshot
+        if let selectedItems {
+            snapshot.items = selectedItems
+        }
+        guard !snapshot.items.isEmpty else { return }
         guard validateConfigurationIfNeeded() else { return }
 
         isExecuting = true
@@ -245,6 +251,7 @@ final class AppViewModel: ObservableObject {
 
             noticeMessage = successMessage(for: snapshot.action, count: snapshot.items.count)
             progressMessage = noticeMessage
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
         } catch {
             errorMessage = error.localizedDescription
         }
