@@ -55,36 +55,10 @@ struct CriteriaFormView: View {
         case .optional:
             Section(header: Text("Duplicates"), footer: duplicateHelpText.map(Text.init)) {
                 Toggle("Avoid duplicates", isOn: avoidDuplicatesBinding)
-                if criteria.avoidDuplicates {
-                    duplicateCriteriaToggles
-                }
             }
         case .required:
-            Section("How to match duplicates") {
-                duplicateCriteriaToggles
-            }
+            EmptyView()
         }
-    }
-
-    private var duplicateCriteriaToggles: some View {
-        Group {
-            duplicateToggle(for: .filename, title: "By filename")
-            duplicateToggle(for: .photoTimestamp, title: "By photo timestamp")
-            duplicateToggle(for: .checksum, title: "By file checksum")
-        }
-    }
-
-    private func duplicateToggle(for criterion: DuplicateCriterion, title: String) -> some View {
-        Toggle(title, isOn: Binding(
-            get: { criteria.duplicateCriteria.contains(criterion) },
-            set: { enabled in
-                if enabled {
-                    criteria.duplicateCriteria.insert(criterion)
-                } else {
-                    criteria.duplicateCriteria.remove(criterion)
-                }
-            }
-        ))
     }
 
     private var ageRuleValueBinding: Binding<Int> {

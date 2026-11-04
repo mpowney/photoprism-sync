@@ -25,6 +25,12 @@ struct SettingsView: View {
                         .focused($focusedField, equals: .password)
                 }
 
+                Section(header: Text("Duplicate matching"), footer: Text("Duplicate matching footer")) {
+                    duplicateToggle(for: .filename, title: "By filename")
+                    duplicateToggle(for: .photoTimestamp, title: "By photo timestamp")
+                    duplicateToggle(for: .checksum, title: "By file checksum")
+                }
+
                 Section {
                     Button("Save settings") {
                         focusedField = nil
@@ -97,5 +103,18 @@ struct SettingsView: View {
             .onChange(of: viewModel.settings.username) { _, _ in viewModel.invalidateCalculation() }
             .onChange(of: viewModel.settings.password) { _, _ in viewModel.invalidateCalculation() }
         }
+    }
+
+    private func duplicateToggle(for criterion: DuplicateCriterion, title: LocalizedStringKey) -> some View {
+        Toggle(title, isOn: Binding(
+            get: { viewModel.criteria.duplicateCriteria.contains(criterion) },
+            set: { enabled in
+                if enabled {
+                    viewModel.criteria.duplicateCriteria.insert(criterion)
+                } else {
+                    viewModel.criteria.duplicateCriteria.remove(criterion)
+                }
+            }
+        ))
     }
 }

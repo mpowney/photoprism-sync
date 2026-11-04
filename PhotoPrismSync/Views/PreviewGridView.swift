@@ -8,6 +8,9 @@ struct PreviewGridView: View {
     let syncButtonTitle: String
     var isDestructive = false
     var showsDoneButton = true
+    var showsSyncBar = true
+    var emptyTitle: LocalizedStringKey = "No Matching Items"
+    var emptyDescription: LocalizedStringKey = "Adjust your criteria and calculate again."
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -31,9 +34,9 @@ struct PreviewGridView: View {
             ScrollView {
                 if items.isEmpty {
                     ContentUnavailableView(
-                        "No Matching Items",
+                        emptyTitle,
                         systemImage: "photo",
-                        description: Text("Adjust your criteria and calculate again.")
+                        description: Text(emptyDescription)
                     )
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                 } else {
@@ -116,7 +119,9 @@ struct PreviewGridView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            selectionBar
+            if showsSyncBar {
+                selectionBar
+            }
         }
         .onAppear {
             selectedIDs = Set(items.map(\.id))
@@ -462,6 +467,64 @@ private struct AssetDetailImage: View {
             } catch {
                 image = nil
             }
+        }
+    }
+}
+
+struct PreviewPanelView: View {
+    enum Mode: Hashable {
+        case changes
+        case matched
+    }
+
+    let items: [AssetDescriptor]
+    let matchedItems: [AssetDescriptor]
+    let formattedSize: (Int64) -> String
+    let onSync: ([AssetDescriptor]) -> Void
+    let syncButtonTitle: String
+    var isDestructive = false
+    var showsDoneButton = true
+
+    @State private var mode: Mode = .changes
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Preview", selection: $mode) {
+                Text("Changes").tag(Mode.changes)
+                Text("Matched in both locations").tag(Mode.matched)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
+            switch mode {
+            case .changes:
+                PreviewGridView(
+                    items: items,
+                    formattedSize: formattedSize,
+                    onSync: onSync,
+                    syncButtonTitle: syncButtonTitle,
+                    isDestructive: isDestructive,
+                    showsDoneButton: showsDoneButton
+                )
+            case .matched:
+                PreviewGridView(
+                    items: matchedItems,
+                    formattedSize: formattedSize,
+                    onSync: { _ in },
+                    syncButtonTitle: syncButtonTitle,
+                    showsDoneButton: showsDoneButton,
+                    showsSyncBar: false,
+                    emptyTitle: "No Matched Items",
+                    emptyDescription: "No photos were found in both locations."
+                )
+            }
+        }
+        .onAppear {
+            if items.isEmpty { mode = .matched }
+        }
+        .onChange(of: items.isEmpty) { _, isEmpty in
+            if isEmpty { mode = .matched }
         }
     }
 }
