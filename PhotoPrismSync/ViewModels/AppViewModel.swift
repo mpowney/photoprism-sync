@@ -13,9 +13,9 @@ final class AppViewModel: ObservableObject {
 
         var title: String {
             switch self {
-            case .upload: "Upload"
-            case .download: "Download"
-            case .delete: "Delete"
+            case .upload: String(localized: "Upload")
+            case .download: String(localized: "Download")
+            case .delete: String(localized: "Delete")
             }
         }
     }
@@ -236,7 +236,7 @@ final class AppViewModel: ObservableObject {
             } else if snapshot.action == .deleteFoundInPhotoPrism || snapshot.action == .deleteOlderThan {
                 progressMessage = "Calculated \(snapshot.summary.itemCount) matching items that will be deleted from your iPhone."
             } else {
-                progressMessage = snapshot.summary.itemCount == 0 ? "No matching items found." : "Calculated \(snapshot.summary.itemCount) matching items."
+                progressMessage = snapshot.summary.itemCount == 0 ? "No matching items found." : String(localized: "Calculated \(snapshot.summary.itemCount) matching items.")
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -386,9 +386,9 @@ final class AppViewModel: ObservableObject {
 
     private func successMessage(for action: SyncAction, count: Int) -> String {
         switch action {
-        case .upload: "Uploaded \(count) photos to PhotoPrism."
-        case .download: "Downloaded \(count) photos to the device."
-        case .deleteFoundInPhotoPrism, .deleteOlderThan: "Deleted \(count) photos from the device."
+        case .upload: String(localized: "Uploaded \(count) photos to PhotoPrism.")
+        case .download: String(localized: "Downloaded \(count) photos to the device.")
+        case .deleteFoundInPhotoPrism, .deleteOlderThan: String(localized: "Deleted \(count) photos from the device.")
         }
     }
 }
