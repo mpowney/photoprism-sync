@@ -48,7 +48,9 @@ struct ContentView: View {
                 PreviewGridView(
                     items: viewModel.previewItems,
                     formattedSize: viewModel.formattedSize,
-                    onSync: requestExecution
+                    onSync: requestExecution,
+                    syncButtonTitle: viewModel.executeButtonTitle,
+                    isDestructive: viewModel.selectedAction == .delete
                 )
             }
         }
@@ -144,9 +146,6 @@ struct ContentView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .refreshable {
-                    await viewModel.calculateSelection()
-                }
             }
 
             if !viewModel.noticeMessage.isEmpty {
@@ -155,6 +154,9 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+        }
+        .refreshable {
+            await viewModel.calculateSelection()
         }
     }
 
@@ -200,6 +202,8 @@ struct ContentView: View {
                     items: snapshot.items,
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
+                    syncButtonTitle: viewModel.executeButtonTitle,
+                    isDestructive: viewModel.selectedAction == .delete,
                     showsDoneButton: false
                 )
             } else {

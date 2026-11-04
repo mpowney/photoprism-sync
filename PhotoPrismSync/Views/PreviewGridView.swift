@@ -5,6 +5,8 @@ struct PreviewGridView: View {
     let items: [AssetDescriptor]
     let formattedSize: (Int64) -> String
     let onSync: ([AssetDescriptor]) -> Void
+    let syncButtonTitle: String
+    var isDestructive = false
     var showsDoneButton = true
 
     @Environment(\.dismiss) private var dismiss
@@ -149,10 +151,11 @@ struct PreviewGridView: View {
             Button {
                 onSync(selectedItems)
             } label: {
-                Text(items.first?.source == .remote ? "Download" : "Sync")
+                Text(syncButtonTitle)
                     .frame(minWidth: 88)
             }
             .buttonStyle(.borderedProminent)
+            .tint(isDestructive ? .red : nil)
             .disabled(selectedItems.isEmpty)
         }
         .padding(.horizontal)
@@ -448,7 +451,13 @@ private struct AssetDetailImage: View {
         case .remote:
             guard let url = item.previewURL else { return }
             do {
-                let (data, _) = try await URLSession.shared.data(from: url)
+                var request = URLRequest(url: url)
+                request.cachePolicy = .reloadIgnoringLocalCacheData
+                request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+                let configuration = URLSessionConfiguration.ephemeral
+                configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+                configuration.urlCache = nil
+                let (data, _) = try await URLSession(configuration: configuration).data(for: request)
                 image = UIImage(data: data)
             } catch {
                 image = nil

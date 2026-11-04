@@ -24,13 +24,20 @@ Context from the previous session: the Apple page could not be fetched (firewall
 2. **Bottom toolbar for actions.** Preview on the left, prominent primary action on the right (Calculate, then Upload/Download/Delete). Delete uses a destructive style plus a confirmation dialog. Remove the button section from the Form.
 3. **Sync screen.** Summary card (item count, size, prepared time), compact progress/status bar above the toolbar, SF Symbol row icons, Dynamic Type, haptics on completion.
 4. **Photos-style preview.** Edge-to-edge 3-column square grid with 1–2pt gaps and no captions; badges for video duration, Live Photo, and "already on server"; tap opens a full-screen pager with pinch-zoom and an info sheet; Select/Deselect so users can exclude items; sticky bottom bar "N selected · size" with a Sync button; Done in the top bar; lazy thumbnails with caching/prefetch.
-5. **Adaptive / iPhone Duo.** Per the Duo HIG page (to be read): support single-screen and double-width modes, plus vertical and horizontal orientation. Plan: `NavigationSplitView` (criteria/actions sidebar, preview grid detail) when width is regular, single stack when compact; drive by size classes/available width, not device checks; respect safe areas and any hinge/fold guidance; adaptive grid columns. Set `TARGETED_DEVICE_FAMILY` and supported orientations in the project and `Info.plist` as the HIG requires.
+5. **Adaptive / iPhone Duo.** Use a `NavigationSplitView` (criteria/actions sidebar, preview grid detail) when width is regular and a single stack when compact; drive by size classes, not device checks. Use system navigation and toolbar components so controls adapt to Duo's vertical layout, respect safe areas, and prefer an even number of grid columns in folded layouts. The HIG does not require an orientation lock or a device-family change.
 6. **Polish.** Pull-to-refresh, empty states, first-run onboarding to sign-in, Dark Mode and VoiceOver checks, Photos permission explainer.
 
 ## PR strategy
 
-Single PR, since the work is layout logic. Exception: hinge/fold behavior or anything the HIG says requires a real device should be a separate follow-up PR tested on hardware before merging. Suggested order within the PR: 1+2, 4, 5, 3+6.
+Single PR for layout and interaction changes. Exception: custom hinge/fold behavior, including use of reserved regions, or anything that needs a real device should be a separate follow-up PR tested on hardware before merging. Suggested order within the PR: 1+2, 4, 5, 3+6.
 
 ## Notes
 
 - Existing tests: `Tests/PhotoPrismSyncCoreTests` (core logic only; `swift test` on macOS). The UI cannot be built in the Linux sandbox, so state clearly what was not verified.
+
+## Approved implementation scope
+
+- The four mockup checkpoints were approved together before implementation.
+- The sync screen now uses a settings toolbar action and system toolbar actions; regular-width layouts show criteria beside the preview, while compact layouts use a single stack.
+- Preview items are selectable, with a square grid, a full-screen pager, pinch zoom, item information, and a selected-item count and size. The media model does not currently provide video duration or an “already on server” flag, so those badges are not shown.
+- Custom hinge/fold handling and reserved-region adjustments remain out of scope until they can be validated on iPhone Duo hardware; deliver them in a separate follow-up PR if needed.
