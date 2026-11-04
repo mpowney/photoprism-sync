@@ -237,11 +237,11 @@ enum PhotoLibraryError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .accessDenied:
-            return "Photo library access is required."
+            return String(localized: "Photo library access is required.")
         case .assetNotFound:
-            return "A selected photo could not be loaded."
+            return String(localized: "A selected photo could not be loaded.")
         case .unknown:
-            return "The photo library operation failed."
+            return String(localized: "The photo library operation failed.")
         }
     }
 }

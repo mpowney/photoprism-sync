@@ -70,7 +70,7 @@ struct ContentView: View {
         .alert("Error", isPresented: errorBinding, actions: {
             Button("OK", role: .cancel) {}
         }, message: {
-            Text(viewModel.errorMessage ?? "Unknown error")
+            Text(viewModel.errorMessage ?? String(localized: "Unknown error"))
         })
     }
 
@@ -218,7 +218,7 @@ struct ContentView: View {
     }
 
     private var primaryActionTitle: String {
-        viewModel.calculationSnapshot == nil ? "Calculate" : viewModel.executeButtonTitle
+        viewModel.calculationSnapshot == nil ? String(localized: "Calculate") : viewModel.executeButtonTitle
     }
 
     private var progressFraction: Double {

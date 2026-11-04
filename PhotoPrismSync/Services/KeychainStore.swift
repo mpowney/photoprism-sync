@@ -8,9 +8,9 @@ enum KeychainStoreError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unexpectedData:
-            return "Stored credentials could not be read."
+            return String(localized: "Stored credentials could not be read.")
         case let .unexpectedStatus(status):
-            return "Keychain access failed with status \(status)."
+            return String(localized: "Keychain access failed with status \(Int(status)).")
         }
     }
 }

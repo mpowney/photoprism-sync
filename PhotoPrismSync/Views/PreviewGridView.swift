@@ -77,7 +77,7 @@ struct PreviewGridView: View {
                                     toggleSelection(for: item)
                                 } label: {
                                     Label(
-                                        selectedIDs.contains(item.id) ? "Deselect" : "Select",
+                                        selectedIDs.contains(item.id) ? String(localized: "Deselect") : String(localized: "Select"),
                                         systemImage: selectedIDs.contains(item.id) ? "checkmark.circle" : "circle"
                                     )
                                 }
@@ -98,7 +98,7 @@ struct PreviewGridView: View {
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(isSelecting ? "Done" : "Select") {
+                Button(isSelecting ? String(localized: "Done") : String(localized: "Select")) {
                     isSelecting.toggle()
                 }
                 .disabled(items.isEmpty)
@@ -209,7 +209,7 @@ struct PreviewGridView: View {
     }
 
     private func selectionLabel(for item: AssetDescriptor) -> String {
-        "\(selectedIDs.contains(item.id) ? "Selected" : "Not selected"), \(item.filename), \(formattedSize(item.sizeBytes))"
+        "\(selectedIDs.contains(item.id) ? String(localized: "Selected") : String(localized: "Not selected")), \(item.filename), \(formattedSize(item.sizeBytes))"
     }
 }
 
@@ -306,6 +306,14 @@ private struct RemoteAssetThumbnailView: View {
     }
 }
 
+private func mediaKindTitle(_ kind: MediaKind) -> String {
+    switch kind {
+    case .photo: String(localized: "Photo")
+    case .livePhoto: String(localized: "Live Photo")
+    case .video: String(localized: "Video")
+    }
+}
+
 private struct AssetDetailPager: View {
     let items: [AssetDescriptor]
     let initialItem: AssetDescriptor
@@ -371,7 +379,7 @@ private struct AssetDetailPager: View {
                         }
                     } label: {
                         Label(
-                            selectedIDs.contains(currentItem.id) ? "Deselect" : "Select",
+                            selectedIDs.contains(currentItem.id) ? String(localized: "Deselect") : String(localized: "Select"),
                             systemImage: selectedIDs.contains(currentItem.id) ? "checkmark.circle.fill" : "circle"
                         )
                     }
@@ -389,7 +397,7 @@ private struct AssetDetailPager: View {
                     List {
                         LabeledContent("Filename", value: currentItem.filename)
                         LabeledContent("Size", value: formattedSize(currentItem.sizeBytes))
-                        LabeledContent("Type", value: currentItem.mediaKind.rawValue.capitalized)
+                        LabeledContent("Type", value: mediaKindTitle(currentItem.mediaKind))
                         if let capturedAt = currentItem.capturedAt {
                             LabeledContent("Date", value: capturedAt.formatted(date: .long, time: .shortened))
                         }

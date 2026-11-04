@@ -10,8 +10,8 @@ struct CriteriaFormView: View {
     @Binding var criteria: SyncCriteria
     let showsAgeRule: Bool
     let duplicateMode: DuplicateMode
-    let duplicateHelpText: String?
-    let sectionTitle: String
+    let duplicateHelpText: LocalizedStringKey?
+    let sectionTitle: LocalizedStringKey
 
     private var ageRuleEnabled: Binding<Bool> {
         Binding(
@@ -38,7 +38,7 @@ struct CriteriaFormView: View {
 
                     Picker("Unit", selection: ageRuleUnitBinding) {
                         ForEach(TimeUnit.allCases) { unit in
-                            Text(unit.rawValue.capitalized).tag(unit)
+                            Text(unit.title).tag(unit)
                         }
                     }
                 }
@@ -53,7 +53,7 @@ struct CriteriaFormView: View {
         case .hidden:
             EmptyView()
         case .optional:
-            Section(header: Text("Duplicates"), footer: duplicateHelpText.map(Text.init)) {
+            Section(header: Text("Duplicates"), footer: duplicateHelpText.map { Text($0) }) {
                 Toggle("Avoid duplicates", isOn: avoidDuplicatesBinding)
             }
         case .required:
@@ -101,5 +101,16 @@ struct CriteriaFormView: View {
             get: { criteria.avoidDuplicates },
             set: { criteria.avoidDuplicates = $0 }
         )
+    }
+}
+
+private extension TimeUnit {
+    var title: LocalizedStringKey {
+        switch self {
+        case .days: "Days"
+        case .weeks: "Weeks"
+        case .months: "Months"
+        case .years: "Years"
+        }
     }
 }
