@@ -2365,6 +2365,7 @@
       }
     },
     "Changes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5582,6 +5583,7 @@
       }
     },
     "Duplicates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5674,6 +5676,9 @@
           }
         }
       }
+    },
+    "Duplicates are determined by your selected duplicate matching settings." : {
+
     },
     "Duplicates that will not be downloaded: %lld." : {
       "extractionState" : "stale",
@@ -7268,6 +7273,7 @@
       }
     },
     "Matched in both locations" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8155,6 +8161,9 @@
           }
         }
       }
+    },
+    "Not Synced" : {
+
     },
     "Notes" : {
       "extractionState" : "stale",
@@ -10564,6 +10573,9 @@
         }
       }
     },
+    "Selected for Deletion" : {
+
+    },
     "Selection Options" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11353,6 +11365,9 @@
           }
         }
       }
+    },
+    "Synced" : {
+
     },
     "Test connection" : {
       "extractionState" : "stale",
@@ -13178,9 +13193,6 @@
         }
       }
     },
-    "Value: %@" : {
-
-    },
     "Value: %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14072,6 +14084,9 @@
         }
       }
     },
+    "When enabled, duplicates are determined by your selected duplicate matching settings; matching photos are deleted from your iPhone only, not from PhotoPrism." : {
+
+    },
     "Years" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14272,6 +14287,9 @@
           }
         }
       }
+    },
+    "Your selected duplicate matching settings determine which local photos match PhotoPrism. Matching photos are deleted from your iPhone only, not from PhotoPrism." : {
+
     }
   },
   "version" : "1.0"
