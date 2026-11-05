@@ -51,6 +51,7 @@ struct ContentView: View {
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
                     syncButtonTitle: viewModel.executeButtonTitle,
+                    action: viewModel.selectedAction,
                     isDestructive: viewModel.selectedAction == .delete
                 )
             }
@@ -204,6 +205,7 @@ struct ContentView: View {
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
                     syncButtonTitle: viewModel.executeButtonTitle,
+                    action: viewModel.selectedAction,
                     isDestructive: viewModel.selectedAction == .delete,
                     showsDoneButton: false
                 )

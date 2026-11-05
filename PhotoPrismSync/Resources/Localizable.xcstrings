@@ -14290,6 +14290,72 @@
     },
     "Your selected duplicate matching settings determine which local photos match PhotoPrism. Matching photos are deleted from your iPhone only, not from PhotoPrism." : {
 
+    },
+    "Uploads photos from your iPhone to PhotoPrism." : {
+      "localizations" : {
+        "af" : { "stringUnit" : { "state" : "translated", "value" : "Laai foto's vanaf jou iPhone na PhotoPrism op." } },
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "يحمّل الصور من iPhone إلى PhotoPrism." } },
+        "be" : { "stringUnit" : { "state" : "translated", "value" : "Запампоўвае фота з вашага iPhone у PhotoPrism." } },
+        "bg" : { "stringUnit" : { "state" : "translated", "value" : "Качва снимки от вашия iPhone в PhotoPrism." } },
+        "ca" : { "stringUnit" : { "state" : "translated", "value" : "Puja fotos del teu iPhone a PhotoPrism." } },
+        "cs" : { "stringUnit" : { "state" : "translated", "value" : "Nahrává fotky z vašeho iPhonu do PhotoPrism." } },
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Uploader fotos fra din iPhone til PhotoPrism." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Uploads photos from your iPhone to PhotoPrism." } },
+        "en-AU" : { "stringUnit" : { "state" : "translated", "value" : "Uploads photos from your iPhone to PhotoPrism." } },
+        "en-GB" : { "stringUnit" : { "state" : "translated", "value" : "Uploads photos from your iPhone to PhotoPrism." } },
+        "et" : { "stringUnit" : { "state" : "translated", "value" : "Laadib fotod sinu iPhone'ist PhotoPrismi üles." } },
+        "eu" : { "stringUnit" : { "state" : "translated", "value" : "Argazkiak zure iPhonetik PhotoPrism-era igotzen ditu." } },
+        "fi" : { "stringUnit" : { "state" : "translated", "value" : "Lataa kuvat iPhonestasi PhotoPrismiin." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Envoie les photos de votre iPhone vers PhotoPrism." } },
+        "hr" : { "stringUnit" : { "state" : "translated", "value" : "Prenosi fotografije s vašeg iPhonea u PhotoPrism." } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Uploadt foto's van je iPhone naar PhotoPrism." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "将照片从 iPhone 上传到 PhotoPrism。" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "將照片從 iPhone 上傳至 PhotoPrism。" } }
+      }
+    },
+    "Downloads photos from PhotoPrism to your iPhone." : {
+      "localizations" : {
+        "af" : { "stringUnit" : { "state" : "translated", "value" : "Laai foto's vanaf PhotoPrism na jou iPhone af." } },
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "ينزّل الصور من PhotoPrism إلى iPhone." } },
+        "be" : { "stringUnit" : { "state" : "translated", "value" : "Спампоўвае фота з PhotoPrism на ваш iPhone." } },
+        "bg" : { "stringUnit" : { "state" : "translated", "value" : "Изтегля снимки от PhotoPrism на вашия iPhone." } },
+        "ca" : { "stringUnit" : { "state" : "translated", "value" : "Baixa fotos de PhotoPrism al teu iPhone." } },
+        "cs" : { "stringUnit" : { "state" : "translated", "value" : "Stahuje fotky z PhotoPrism do vašeho iPhonu." } },
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Downloader fotos fra PhotoPrism til din iPhone." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Downloads photos from PhotoPrism to your iPhone." } },
+        "en-AU" : { "stringUnit" : { "state" : "translated", "value" : "Downloads photos from PhotoPrism to your iPhone." } },
+        "en-GB" : { "stringUnit" : { "state" : "translated", "value" : "Downloads photos from PhotoPrism to your iPhone." } },
+        "et" : { "stringUnit" : { "state" : "translated", "value" : "Laadib fotod PhotoPrismist sinu iPhone'i alla." } },
+        "eu" : { "stringUnit" : { "state" : "translated", "value" : "Argazkiak PhotoPrismetik zure iPhonera deskargatzen ditu." } },
+        "fi" : { "stringUnit" : { "state" : "translated", "value" : "Lataa kuvat PhotoPrismista iPhoneesi." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Télécharge les photos de PhotoPrism sur votre iPhone." } },
+        "hr" : { "stringUnit" : { "state" : "translated", "value" : "Preuzima fotografije iz PhotoPrisma na vaš iPhone." } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Downloadt foto's van PhotoPrism naar je iPhone." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "将照片从 PhotoPrism 下载到 iPhone。" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "將照片從 PhotoPrism 下載至 iPhone。" } }
+      }
+    },
+    "Deletes photos from your iPhone." : {
+      "localizations" : {
+        "af" : { "stringUnit" : { "state" : "translated", "value" : "Vee foto's van jou iPhone uit." } },
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "يحذف الصور من iPhone." } },
+        "be" : { "stringUnit" : { "state" : "translated", "value" : "Выдаляе фота з вашага iPhone." } },
+        "bg" : { "stringUnit" : { "state" : "translated", "value" : "Изтрива снимки от вашия iPhone." } },
+        "ca" : { "stringUnit" : { "state" : "translated", "value" : "Elimina fotos del teu iPhone." } },
+        "cs" : { "stringUnit" : { "state" : "translated", "value" : "Maže fotky z vašeho iPhonu." } },
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Sletter fotos fra din iPhone." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deletes photos from your iPhone." } },
+        "en-AU" : { "stringUnit" : { "state" : "translated", "value" : "Deletes photos from your iPhone." } },
+        "en-GB" : { "stringUnit" : { "state" : "translated", "value" : "Deletes photos from your iPhone." } },
+        "et" : { "stringUnit" : { "state" : "translated", "value" : "Kustutab fotod sinu iPhone'ist." } },
+        "eu" : { "stringUnit" : { "state" : "translated", "value" : "Argazkiak zure iPhonetik ezabatzen ditu." } },
+        "fi" : { "stringUnit" : { "state" : "translated", "value" : "Poistaa kuvat iPhonestasi." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprime les photos de votre iPhone." } },
+        "hr" : { "stringUnit" : { "state" : "translated", "value" : "Briše fotografije s vašeg iPhonea." } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Verwijdert foto's van je iPhone." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "从 iPhone 删除照片。" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "從 iPhone 刪除照片。" } }
+      }
     }
   },
   "version" : "1.0"
