@@ -46,8 +46,9 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
 }
 
 @Suite struct CriteriaEvaluatorTests {
-    @Test func filtersByAgeAndMediaSelection() {
+    @Test func filtersByTimestampRangeAndMediaSelection() {
         let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let cutoff = now.addingTimeInterval(-60 * 60 * 24 * 30)
         let oldPhoto = AssetDescriptor(
             id: "1",
             source: .local,
@@ -66,7 +67,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         )
 
         let criteria = SyncCriteria(
-            ageRule: AgeRule(value: 30, unit: .days),
+            photoTimestampRange: PhotoTimestampRange(startDate: .distantPast, endDate: cutoff),
             mediaSelection: MediaSelection(includePhotos: true, includeLivePhotos: false, includeVideos: false),
             avoidDuplicates: false,
             duplicateCriteria: []
@@ -77,13 +78,34 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         #expect(result == [oldPhoto])
     }
 
-    @Test func defaultCriteriaEnableDuplicateAndChecksumChecksWithoutAgeRule() {
+    @Test func defaultCriteriaEnableDuplicateAndChecksumChecksWithoutTimestampRange() {
         let criteria = SyncCriteria()
 
-        #expect(criteria.ageRule == nil)
+        #expect(criteria.photoTimestampRange == nil)
         #expect(criteria.avoidDuplicates)
         #expect(criteria.duplicateCriteria == Set(DuplicateCriterion.allCases))
         #expect(criteria.duplicateCriteria.contains(.checksum))
+    }
+
+    @Test func timestampRangeIncludesBothBoundariesAndExcludesMissingDates() {
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        let end = start.addingTimeInterval(1_000)
+        let items = [
+            AssetDescriptor(id: "before", filename: "before.jpg", capturedAt: start.addingTimeInterval(-1), mediaKind: .photo, sizeBytes: 1),
+            AssetDescriptor(id: "start", filename: "start.jpg", capturedAt: start, mediaKind: .photo, sizeBytes: 1),
+            AssetDescriptor(id: "inside", filename: "inside.jpg", capturedAt: start.addingTimeInterval(500), mediaKind: .photo, sizeBytes: 1),
+            AssetDescriptor(id: "end", filename: "end.jpg", capturedAt: end, mediaKind: .photo, sizeBytes: 1),
+            AssetDescriptor(id: "after", filename: "after.jpg", capturedAt: end.addingTimeInterval(1), mediaKind: .photo, sizeBytes: 1),
+            AssetDescriptor(id: "unknown", filename: "unknown.jpg", capturedAt: nil, mediaKind: .photo, sizeBytes: 1),
+        ]
+        let criteria = SyncCriteria(
+            photoTimestampRange: PhotoTimestampRange(startDate: start, endDate: end),
+            avoidDuplicates: false
+        )
+
+        let result = CriteriaEvaluator.filter(sourceItems: items, criteria: criteria)
+
+        #expect(result.map(\.id) == ["start", "inside", "end"])
     }
 
     @Test func excludesDuplicatesWhenAnySelectedCriterionMatches() {
@@ -98,7 +120,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
             AssetDescriptor(id: "r2", source: .remote, filename: "another.heic", capturedAt: timestamp.addingTimeInterval(-20), mediaKind: .photo, sizeBytes: 100),
         ]
         let criteria = SyncCriteria(
-            ageRule: nil,
+            photoTimestampRange: nil,
             mediaSelection: .all,
             avoidDuplicates: true,
             duplicateCriteria: [.filename, .photoTimestamp]
@@ -113,7 +135,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
         let localItem = AssetDescriptor(id: "1", source: .local, filename: "dup.jpg", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100)
         let remoteItem = AssetDescriptor(id: "r1", source: .remote, filename: "dup.jpg", capturedAt: nil, mediaKind: .photo, sizeBytes: 100)
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [])
 
         let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
 
@@ -132,7 +154,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
             mediaKind: .photo,
             sizeBytes: 100
         )
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.filename])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.filename])
 
         let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
 
@@ -159,7 +181,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
             sizeBytes: 100,
             checksums: ["abcdef0123456789"]
         )
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
 
         let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
 
@@ -170,7 +192,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         let timestamp = Date(timeIntervalSince1970: 1_700_000_000)
         let localItem = AssetDescriptor(id: "1", source: .local, filename: "same-name.heic", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100)
         let remoteItem = AssetDescriptor(id: "r1", source: .remote, filename: "same-name.heic", capturedAt: timestamp, mediaKind: .photo, sizeBytes: 100)
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
 
         let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
 
@@ -199,7 +221,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
             sizeBytes: 100,
             checksums: ["previewhash456", "originalhash123"]
         )
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.checksum])
 
         let result = CriteriaEvaluator.filter(sourceItems: [localItem], criteria: criteria, duplicateReferenceItems: [remoteItem], now: timestamp)
 
@@ -215,7 +237,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         let remoteItems = [
             AssetDescriptor(id: "r1", source: .remote, filename: "delete.heic", capturedAt: timestamp.addingTimeInterval(-600), mediaKind: .photo, sizeBytes: 100),
         ]
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.filename])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: true, duplicateCriteria: [.filename])
 
         let result = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems, now: timestamp)
 
@@ -230,7 +252,7 @@ private final class UploadExecutionRecorder: @unchecked Sendable {
         let remoteItems = [
             AssetDescriptor(id: "r1", source: .remote, filename: "same-name.heic", capturedAt: nil, mediaKind: .photo, sizeBytes: 100),
         ]
-        let criteria = SyncCriteria(ageRule: nil, mediaSelection: .all, avoidDuplicates: false, duplicateCriteria: [])
+        let criteria = SyncCriteria(photoTimestampRange: nil, mediaSelection: .all, avoidDuplicates: false, duplicateCriteria: [])
 
         let result = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems, now: timestamp)
 
