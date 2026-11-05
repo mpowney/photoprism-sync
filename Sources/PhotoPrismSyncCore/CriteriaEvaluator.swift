@@ -8,7 +8,6 @@ public enum CriteriaEvaluator {
         now: Date = .now,
         calendar: Calendar = .current
     ) -> [AssetDescriptor] {
-        let cutoff = criteria.ageRule?.cutoffDate(relativeTo: now, calendar: calendar)
         let effectiveCriteria = criteria.effectiveDuplicateCriteria.isEmpty ? Set(DuplicateCriterion.allCases) : criteria.effectiveDuplicateCriteria
         let duplicateIndex = buildDuplicateIndex(from: duplicateReferenceItems, criteria: effectiveCriteria)
 
@@ -17,8 +16,8 @@ public enum CriteriaEvaluator {
                 return false
             }
 
-            if let cutoff {
-                guard let capturedAt = item.capturedAt, capturedAt <= cutoff else {
+            if let timestampRange = criteria.photoTimestampRange {
+                guard timestampRange.contains(item.capturedAt) else {
                     return false
                 }
             }
@@ -34,7 +33,6 @@ public enum CriteriaEvaluator {
         now: Date = .now,
         calendar: Calendar = .current
     ) -> [AssetDescriptor] {
-        let cutoff = criteria.ageRule?.cutoffDate(relativeTo: now, calendar: calendar)
         let duplicateIndex = buildDuplicateIndex(from: duplicateReferenceItems, criteria: criteria.effectiveDuplicateCriteria)
 
         return sourceItems.filter { item in
@@ -42,8 +40,8 @@ public enum CriteriaEvaluator {
                 return false
             }
 
-            if let cutoff {
-                guard let capturedAt = item.capturedAt, capturedAt <= cutoff else {
+            if let timestampRange = criteria.photoTimestampRange {
+                guard timestampRange.contains(item.capturedAt) else {
                     return false
                 }
             }

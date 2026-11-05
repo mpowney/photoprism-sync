@@ -8,35 +8,18 @@ public enum MediaKind: String, Codable, CaseIterable, Identifiable, Sendable {
     public var id: String { rawValue }
 }
 
-public enum TimeUnit: String, Codable, CaseIterable, Identifiable, Sendable {
-    case days
-    case weeks
-    case months
-    case years
+public struct PhotoTimestampRange: Codable, Equatable, Sendable {
+    public var startDate: Date
+    public var endDate: Date
 
-    public var id: String { rawValue }
-}
-
-public struct AgeRule: Codable, Equatable, Hashable, Sendable {
-    public var value: Int
-    public var unit: TimeUnit
-
-    public init(value: Int = 30, unit: TimeUnit = .days) {
-        self.value = value
-        self.unit = unit
+    public init(startDate: Date, endDate: Date) {
+        self.startDate = startDate
+        self.endDate = endDate
     }
 
-    public func cutoffDate(relativeTo date: Date, calendar: Calendar = .current) -> Date? {
-        guard value > 0 else { return nil }
-
-        let component: Calendar.Component = switch unit {
-        case .days: .day
-        case .weeks: .weekOfYear
-        case .months: .month
-        case .years: .year
-        }
-
-        return calendar.date(byAdding: component, value: -value, to: date)
+    public func contains(_ date: Date?) -> Bool {
+        guard let date else { return false }
+        return startDate <= date && date <= endDate
     }
 }
 
@@ -74,18 +57,18 @@ public struct MediaSelection: Codable, Equatable, Hashable, Sendable {
 }
 
 public struct SyncCriteria: Codable, Equatable, Sendable {
-    public var ageRule: AgeRule?
+    public var photoTimestampRange: PhotoTimestampRange?
     public var mediaSelection: MediaSelection
     public var avoidDuplicates: Bool
     public var duplicateCriteria: Set<DuplicateCriterion>
 
     public init(
-        ageRule: AgeRule? = nil,
+        photoTimestampRange: PhotoTimestampRange? = nil,
         mediaSelection: MediaSelection = .all,
         avoidDuplicates: Bool = true,
         duplicateCriteria: Set<DuplicateCriterion> = Set(DuplicateCriterion.allCases)
     ) {
-        self.ageRule = ageRule
+        self.photoTimestampRange = photoTimestampRange
         self.mediaSelection = mediaSelection
         self.avoidDuplicates = avoidDuplicates
         self.duplicateCriteria = duplicateCriteria

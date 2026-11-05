@@ -498,8 +498,9 @@ struct PreviewPanelView: View {
     var body: some View {
         VStack(spacing: 0) {
             Picker("Preview", selection: $mode) {
-                Text("Changes").tag(Mode.changes)
-                Text("Matched in both locations").tag(Mode.matched)
+                (isDestructive ? Text("Selected for Deletion") : Text("Not Synced"))
+                    .tag(Mode.changes)
+                Text("Synced").tag(Mode.matched)
             }
             .pickerStyle(.segmented)
             .padding(.horizontal)
@@ -535,4 +536,5 @@ struct PreviewPanelView: View {
             if isEmpty { mode = .matched }
         }
     }
+
 }

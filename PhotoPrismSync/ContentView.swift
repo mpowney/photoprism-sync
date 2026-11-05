@@ -104,13 +104,18 @@ struct ContentView: View {
                         }
                     }
                 }
+
+                Text(operationDescription)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             CriteriaFormView(
                 criteria: $viewModel.criteria,
-                showsAgeRule: viewModel.currentAction != .deleteFoundInPhotoPrism,
-                duplicateMode: viewModel.currentAction == .deleteFoundInPhotoPrism ? .required : .optional,
-                duplicateHelpText: viewModel.selectedAction == .delete && viewModel.deleteMode == .olderThan ? "When enabled, duplicate checks compare your local library against PhotoPrism and require server credentials." : nil,
+                timestampFilterSettings: $viewModel.timestampFilterSettings,
+                duplicateMode: viewModel.selectedAction == .delete
+                    ? (viewModel.deleteMode == .olderThan ? .delete : .required)
+                    : .optional,
                 sectionTitle: viewModel.selectedAction == .delete ? "What to delete" : "What to include"
             )
 
@@ -219,6 +224,14 @@ struct ContentView: View {
 
     private var primaryActionTitle: String {
         viewModel.calculationSnapshot == nil ? String(localized: "Calculate") : viewModel.executeButtonTitle
+    }
+
+    private var operationDescription: LocalizedStringKey {
+        switch viewModel.selectedAction {
+        case .upload: "Uploads photos from your iPhone to PhotoPrism."
+        case .download: "Downloads photos from PhotoPrism to your iPhone."
+        case .delete: "Deletes photos from your iPhone."
+        }
     }
 
     private var progressFraction: Double {

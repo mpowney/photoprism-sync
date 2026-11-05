@@ -29,7 +29,7 @@ final class AppViewModel: ObservableObject {
         var title: String {
             switch self {
             case .foundInPhotoPrism: String(localized: "Delete photos found in PhotoPrism")
-            case .olderThan: String(localized: "Delete photos older than…")
+            case .olderThan: String(localized: "Delete photos matching criteria")
             }
         }
     }
@@ -44,6 +44,14 @@ final class AppViewModel: ObservableObject {
     @Published var selectedAction: PrimaryAction = .upload
     @Published var deleteMode: DeleteMode = .foundInPhotoPrism
     @Published var criteria = SyncCriteria()
+    @Published var timestampFilterSettings = TimestampFilterSettings() {
+        didSet {
+            settingsStore.saveTimestampFilter(timestampFilterSettings)
+            criteria.photoTimestampRange = timestampFilterSettings.isEnabled
+                ? timestampFilterSettings.photoTimestampRange
+                : nil
+        }
+    }
     @Published var calculationSnapshot: CalculationSnapshot?
     @Published var isCalculating = false
     @Published var isExecuting = false
@@ -70,6 +78,10 @@ final class AppViewModel: ObservableObject {
         self.photoPrismClient = photoPrismClient
         self.photoLibrary = photoLibrary
         settings = settingsStore.load()
+        timestampFilterSettings = settingsStore.loadTimestampFilter()
+        criteria.photoTimestampRange = timestampFilterSettings.isEnabled
+            ? timestampFilterSettings.photoTimestampRange
+            : nil
     }
 
     var currentAction: SyncAction {
@@ -106,7 +118,6 @@ final class AppViewModel: ObservableObject {
 
         switch currentAction {
         case .deleteFoundInPhotoPrism:
-            working.ageRule = nil
             working.avoidDuplicates = true
             if working.duplicateCriteria.isEmpty {
                 working.duplicateCriteria = Set(DuplicateCriterion.allCases)
@@ -207,7 +218,12 @@ final class AppViewModel: ObservableObject {
             case .deleteOlderThan:
                 localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
                 remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
-                let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
+                let matching: [AssetDescriptor]
+                if criteria.avoidDuplicates {
+                    matching = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
+                } else {
+                    matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria)
+                }
                 snapshot = CalculationSnapshot(action: .deleteOlderThan, criteria: criteria, items: sorted(matching))
             }
 
@@ -220,7 +236,7 @@ final class AppViewModel: ObservableObject {
                 }
             }
             var matchCriteria = criteria
-            matchCriteria.ageRule = nil
+            matchCriteria.photoTimestampRange = nil
             matchCriteria.avoidDuplicates = true
             matchedItems = sorted(CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: matchCriteria, duplicateReferenceItems: remoteItems))
 
@@ -325,7 +341,7 @@ final class AppViewModel: ObservableObject {
     }
 
     private func executeDelete(_ snapshot: CalculationSnapshot) async throws {
-        progressMessage = String(localized: "Deleting photos from the device…")
+        progressMessage = String(localized: "Deleting photos from your iPhone…")
         try await photoLibrary.deleteAssets(localIdentifiers: snapshot.items.map(\.id))
         completedItems = snapshot.items.count
     }
@@ -393,7 +409,7 @@ final class AppViewModel: ObservableObject {
         switch action {
         case .upload: String(localized: "Uploaded \(count) photos to PhotoPrism.")
         case .download: String(localized: "Downloaded \(count) photos to the device.")
-        case .deleteFoundInPhotoPrism, .deleteOlderThan: String(localized: "Deleted \(count) photos from the device.")
+        case .deleteFoundInPhotoPrism, .deleteOlderThan: String(localized: "Deleted \(count) photos from your iPhone.")
         }
     }
 }
