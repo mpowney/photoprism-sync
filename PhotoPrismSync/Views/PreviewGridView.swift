@@ -490,7 +490,6 @@ struct PreviewPanelView: View {
     let formattedSize: (Int64) -> String
     let onSync: ([AssetDescriptor]) -> Void
     let syncButtonTitle: String
-    let action: AppViewModel.PrimaryAction
     var isDestructive = false
     var showsDoneButton = true
 
@@ -506,13 +505,6 @@ struct PreviewPanelView: View {
             .pickerStyle(.segmented)
             .padding(.horizontal)
             .padding(.vertical, 8)
-
-            Text(operationDescription)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
-                .padding(.bottom, 8)
 
             switch mode {
             case .changes:
@@ -545,11 +537,4 @@ struct PreviewPanelView: View {
         }
     }
 
-    private var operationDescription: LocalizedStringKey {
-        switch action {
-        case .upload: "Uploads photos from your iPhone to PhotoPrism."
-        case .download: "Downloads photos from PhotoPrism to your iPhone."
-        case .delete: "Deletes photos from your iPhone."
-        }
-    }
 }

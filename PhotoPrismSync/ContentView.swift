@@ -51,7 +51,6 @@ struct ContentView: View {
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
                     syncButtonTitle: viewModel.executeButtonTitle,
-                    action: viewModel.selectedAction,
                     isDestructive: viewModel.selectedAction == .delete
                 )
             }
@@ -105,6 +104,10 @@ struct ContentView: View {
                         }
                     }
                 }
+
+                Text(operationDescription)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             CriteriaFormView(
@@ -205,7 +208,6 @@ struct ContentView: View {
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
                     syncButtonTitle: viewModel.executeButtonTitle,
-                    action: viewModel.selectedAction,
                     isDestructive: viewModel.selectedAction == .delete,
                     showsDoneButton: false
                 )
@@ -222,6 +224,14 @@ struct ContentView: View {
 
     private var primaryActionTitle: String {
         viewModel.calculationSnapshot == nil ? String(localized: "Calculate") : viewModel.executeButtonTitle
+    }
+
+    private var operationDescription: LocalizedStringKey {
+        switch viewModel.selectedAction {
+        case .upload: "Uploads photos from your iPhone to PhotoPrism."
+        case .download: "Downloads photos from PhotoPrism to your iPhone."
+        case .delete: "Deletes photos from your iPhone."
+        }
     }
 
     private var progressFraction: Double {
