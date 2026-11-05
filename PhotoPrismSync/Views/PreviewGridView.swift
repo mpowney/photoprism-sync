@@ -8,6 +8,9 @@ struct PreviewGridView: View {
     let syncButtonTitle: String
     var isDestructive = false
     var showsDoneButton = true
+    var showsSyncBar = true
+    var emptyTitle: LocalizedStringKey = "No Matching Items"
+    var emptyDescription: LocalizedStringKey = "Adjust your criteria and calculate again."
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -31,9 +34,9 @@ struct PreviewGridView: View {
             ScrollView {
                 if items.isEmpty {
                     ContentUnavailableView(
-                        "No Matching Items",
+                        emptyTitle,
                         systemImage: "photo",
-                        description: Text("Adjust your criteria and calculate again.")
+                        description: Text(emptyDescription)
                     )
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                 } else {
@@ -74,7 +77,7 @@ struct PreviewGridView: View {
                                     toggleSelection(for: item)
                                 } label: {
                                     Label(
-                                        selectedIDs.contains(item.id) ? "Deselect" : "Select",
+                                        selectedIDs.contains(item.id) ? String(localized: "Deselect") : String(localized: "Select"),
                                         systemImage: selectedIDs.contains(item.id) ? "checkmark.circle" : "circle"
                                     )
                                 }
@@ -95,7 +98,7 @@ struct PreviewGridView: View {
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(isSelecting ? "Done" : "Select") {
+                Button(isSelecting ? String(localized: "Done") : String(localized: "Select")) {
                     isSelecting.toggle()
                 }
                 .disabled(items.isEmpty)
@@ -116,7 +119,9 @@ struct PreviewGridView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            selectionBar
+            if showsSyncBar {
+                selectionBar
+            }
         }
         .onAppear {
             selectedIDs = Set(items.map(\.id))
@@ -204,7 +209,7 @@ struct PreviewGridView: View {
     }
 
     private func selectionLabel(for item: AssetDescriptor) -> String {
-        "\(selectedIDs.contains(item.id) ? "Selected" : "Not selected"), \(item.filename), \(formattedSize(item.sizeBytes))"
+        "\(selectedIDs.contains(item.id) ? String(localized: "Selected") : String(localized: "Not selected")), \(item.filename), \(formattedSize(item.sizeBytes))"
     }
 }
 
@@ -301,6 +306,14 @@ private struct RemoteAssetThumbnailView: View {
     }
 }
 
+private func mediaKindTitle(_ kind: MediaKind) -> String {
+    switch kind {
+    case .photo: String(localized: "Photo")
+    case .livePhoto: String(localized: "Live Photo")
+    case .video: String(localized: "Video")
+    }
+}
+
 private struct AssetDetailPager: View {
     let items: [AssetDescriptor]
     let initialItem: AssetDescriptor
@@ -366,7 +379,7 @@ private struct AssetDetailPager: View {
                         }
                     } label: {
                         Label(
-                            selectedIDs.contains(currentItem.id) ? "Deselect" : "Select",
+                            selectedIDs.contains(currentItem.id) ? String(localized: "Deselect") : String(localized: "Select"),
                             systemImage: selectedIDs.contains(currentItem.id) ? "checkmark.circle.fill" : "circle"
                         )
                     }
@@ -384,7 +397,7 @@ private struct AssetDetailPager: View {
                     List {
                         LabeledContent("Filename", value: currentItem.filename)
                         LabeledContent("Size", value: formattedSize(currentItem.sizeBytes))
-                        LabeledContent("Type", value: currentItem.mediaKind.rawValue.capitalized)
+                        LabeledContent("Type", value: mediaKindTitle(currentItem.mediaKind))
                         if let capturedAt = currentItem.capturedAt {
                             LabeledContent("Date", value: capturedAt.formatted(date: .long, time: .shortened))
                         }
@@ -462,6 +475,64 @@ private struct AssetDetailImage: View {
             } catch {
                 image = nil
             }
+        }
+    }
+}
+
+struct PreviewPanelView: View {
+    enum Mode: Hashable {
+        case changes
+        case matched
+    }
+
+    let items: [AssetDescriptor]
+    let matchedItems: [AssetDescriptor]
+    let formattedSize: (Int64) -> String
+    let onSync: ([AssetDescriptor]) -> Void
+    let syncButtonTitle: String
+    var isDestructive = false
+    var showsDoneButton = true
+
+    @State private var mode: Mode = .changes
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Preview", selection: $mode) {
+                Text("Changes").tag(Mode.changes)
+                Text("Matched in both locations").tag(Mode.matched)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
+            switch mode {
+            case .changes:
+                PreviewGridView(
+                    items: items,
+                    formattedSize: formattedSize,
+                    onSync: onSync,
+                    syncButtonTitle: syncButtonTitle,
+                    isDestructive: isDestructive,
+                    showsDoneButton: showsDoneButton
+                )
+            case .matched:
+                PreviewGridView(
+                    items: matchedItems,
+                    formattedSize: formattedSize,
+                    onSync: { _ in },
+                    syncButtonTitle: syncButtonTitle,
+                    showsDoneButton: showsDoneButton,
+                    showsSyncBar: false,
+                    emptyTitle: "No Matched Items",
+                    emptyDescription: "No photos were found in both locations."
+                )
+            }
+        }
+        .onAppear {
+            if items.isEmpty { mode = .matched }
+        }
+        .onChange(of: items.isEmpty) { _, isEmpty in
+            if isEmpty { mode = .matched }
         }
     }
 }

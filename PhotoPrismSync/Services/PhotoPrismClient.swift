@@ -331,22 +331,22 @@ enum PhotoPrismClientError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidServerURL:
-            return "The PhotoPrism URL is invalid."
+            return String(localized: "The PhotoPrism URL is invalid.")
         case .invalidResponse:
-            return "The PhotoPrism server returned an invalid response."
+            return String(localized: "The PhotoPrism server returned an invalid response.")
         case .missingAccessToken:
-            return "PhotoPrism did not return an access token."
+            return String(localized: "PhotoPrism did not return an access token.")
         case .missingUserUID:
-            return "PhotoPrism did not return the signed-in user identifier."
+            return String(localized: "PhotoPrism did not return the signed-in user identifier.")
         case .missingDownloadURL:
-            return "A PhotoPrism photo did not include a download URL."
+            return String(localized: "A PhotoPrism photo did not include a download URL.")
         case .tempFileCreationFailed:
-            return "A temporary upload file could not be created."
+            return String(localized: "A temporary upload file could not be created.")
         case let .requestFailed(statusCode, message):
             if let message, !message.isEmpty {
-                return "PhotoPrism request failed (\(statusCode)): \(message)"
+                return String(localized: "PhotoPrism request failed (\(statusCode)): \(message)")
             }
-            return "PhotoPrism request failed with status \(statusCode)."
+            return String(localized: "PhotoPrism request failed with status \(statusCode).")
         }
     }
 }

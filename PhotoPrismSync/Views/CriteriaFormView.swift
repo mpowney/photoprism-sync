@@ -10,8 +10,8 @@ struct CriteriaFormView: View {
     @Binding var criteria: SyncCriteria
     let showsAgeRule: Bool
     let duplicateMode: DuplicateMode
-    let duplicateHelpText: String?
-    let sectionTitle: String
+    let duplicateHelpText: LocalizedStringKey?
+    let sectionTitle: LocalizedStringKey
 
     private var ageRuleEnabled: Binding<Bool> {
         Binding(
@@ -38,7 +38,7 @@ struct CriteriaFormView: View {
 
                     Picker("Unit", selection: ageRuleUnitBinding) {
                         ForEach(TimeUnit.allCases) { unit in
-                            Text(unit.rawValue.capitalized).tag(unit)
+                            Text(unit.title).tag(unit)
                         }
                     }
                 }
@@ -53,38 +53,12 @@ struct CriteriaFormView: View {
         case .hidden:
             EmptyView()
         case .optional:
-            Section(header: Text("Duplicates"), footer: duplicateHelpText.map(Text.init)) {
+            Section(header: Text("Duplicates"), footer: duplicateHelpText.map { Text($0) }) {
                 Toggle("Avoid duplicates", isOn: avoidDuplicatesBinding)
-                if criteria.avoidDuplicates {
-                    duplicateCriteriaToggles
-                }
             }
         case .required:
-            Section("How to match duplicates") {
-                duplicateCriteriaToggles
-            }
+            EmptyView()
         }
-    }
-
-    private var duplicateCriteriaToggles: some View {
-        Group {
-            duplicateToggle(for: .filename, title: "By filename")
-            duplicateToggle(for: .photoTimestamp, title: "By photo timestamp")
-            duplicateToggle(for: .checksum, title: "By file checksum")
-        }
-    }
-
-    private func duplicateToggle(for criterion: DuplicateCriterion, title: String) -> some View {
-        Toggle(title, isOn: Binding(
-            get: { criteria.duplicateCriteria.contains(criterion) },
-            set: { enabled in
-                if enabled {
-                    criteria.duplicateCriteria.insert(criterion)
-                } else {
-                    criteria.duplicateCriteria.remove(criterion)
-                }
-            }
-        ))
     }
 
     private var ageRuleValueBinding: Binding<Int> {
@@ -127,5 +101,16 @@ struct CriteriaFormView: View {
             get: { criteria.avoidDuplicates },
             set: { criteria.avoidDuplicates = $0 }
         )
+    }
+}
+
+private extension TimeUnit {
+    var title: LocalizedStringKey {
+        switch self {
+        case .days: "Days"
+        case .weeks: "Weeks"
+        case .months: "Months"
+        case .years: "Years"
+        }
     }
 }

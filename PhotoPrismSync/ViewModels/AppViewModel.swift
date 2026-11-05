@@ -13,9 +13,9 @@ final class AppViewModel: ObservableObject {
 
         var title: String {
             switch self {
-            case .upload: "Upload"
-            case .download: "Download"
-            case .delete: "Delete"
+            case .upload: String(localized: "Upload")
+            case .download: String(localized: "Download")
+            case .delete: String(localized: "Delete")
             }
         }
     }
@@ -28,8 +28,8 @@ final class AppViewModel: ObservableObject {
 
         var title: String {
             switch self {
-            case .foundInPhotoPrism: "Delete photos found in PhotoPrism"
-            case .olderThan: "Delete photos older than…"
+            case .foundInPhotoPrism: String(localized: "Delete photos found in PhotoPrism")
+            case .olderThan: String(localized: "Delete photos older than…")
             }
         }
     }
@@ -55,6 +55,7 @@ final class AppViewModel: ObservableObject {
     @Published var noticeMessage = ""
     @Published var errorMessage: String?
     @Published var isShowingPreview = false
+    @Published var matchedItems: [AssetDescriptor] = []
 
     private let settingsStore: AppSettingsStore
     private let photoPrismClient: PhotoPrismClient
@@ -81,9 +82,9 @@ final class AppViewModel: ObservableObject {
 
     var executeButtonTitle: String {
         switch currentAction {
-        case .upload: "Upload photos"
-        case .download: "Download photos"
-        case .deleteFoundInPhotoPrism, .deleteOlderThan: "Delete photos"
+        case .upload: String(localized: "Upload photos")
+        case .download: String(localized: "Download photos")
+        case .deleteFoundInPhotoPrism, .deleteOlderThan: String(localized: "Delete photos")
         }
     }
 
@@ -127,7 +128,7 @@ final class AppViewModel: ObservableObject {
     func saveSettings() {
         do {
             try settingsStore.save(settings)
-            noticeMessage = "PhotoPrism settings saved."
+            noticeMessage = String(localized: "PhotoPrism settings saved.")
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -141,7 +142,7 @@ final class AppViewModel: ObservableObject {
 
         do {
             try await photoPrismClient.validateConnection(using: settings)
-            let message = "Successfully signed in to PhotoPrism."
+            let message = String(localized: "Successfully signed in to PhotoPrism.")
             connectionStatus = .success(message)
             noticeMessage = message
         } catch {
@@ -153,6 +154,7 @@ final class AppViewModel: ObservableObject {
 
     func invalidateCalculation() {
         calculationSnapshot = nil
+        matchedItems = []
         completedItems = 0
         totalItems = 0
         progressMessage = ""
@@ -164,7 +166,7 @@ final class AppViewModel: ObservableObject {
         guard validateConfigurationIfNeeded() else { return }
 
         isCalculating = true
-        progressMessage = "Calculating matching items…"
+        progressMessage = String(localized: "Calculating matching items…")
         defer { isCalculating = false }
 
         do {
@@ -174,49 +176,72 @@ final class AppViewModel: ObservableObject {
             var remoteFetchDiagnostics: LibraryFetchResult?
             var duplicateCount = 0
 
+            let wantsRemote = settings.isComplete
+            var localItems: [AssetDescriptor] = []
+            var remoteItems: [AssetDescriptor] = []
+
             switch currentAction {
             case .upload:
-                let localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
-                let remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
+                localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
+                remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
                 duplicateCount = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems).count
                 let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .upload, criteria: criteria, items: sorted(matching))
             case .download:
                 let fetchResult = try await photoPrismClient.fetchLibraryItemsWithDiagnostics(using: settings) { [weak self] pageCount, rawDecodedCount in
                     Task { @MainActor in
-                        self?.progressMessage = "Fetching from server… \(rawDecodedCount) found across \(pageCount) page(s)…"
+                        self?.progressMessage = String(localized: "Fetching from server… found: \(rawDecodedCount), pages: \(pageCount)…")
                     }
                 }
                 remoteFetchDiagnostics = fetchResult
-                let localItems = criteria.avoidDuplicates ? try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum) : []
+                remoteItems = fetchResult.items
+                localItems = criteria.avoidDuplicates ? try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum) : []
                 duplicateCount = CriteriaEvaluator.matchingDuplicates(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems).count
                 let matching = CriteriaEvaluator.filter(sourceItems: fetchResult.items, criteria: criteria, duplicateReferenceItems: localItems)
                 snapshot = CalculationSnapshot(action: .download, criteria: criteria, items: sorted(matching))
             case .deleteFoundInPhotoPrism:
-                let localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
-                let remoteItems = try await photoPrismClient.fetchLibraryItems(using: settings)
+                localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
+                remoteItems = try await photoPrismClient.fetchLibraryItems(using: settings)
                 let matching = CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .deleteFoundInPhotoPrism, criteria: criteria, items: sorted(matching))
             case .deleteOlderThan:
-                let localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
-                let remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
+                localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
+                remoteItems = criteria.avoidDuplicates ? try await photoPrismClient.fetchLibraryItems(using: settings) : []
                 let matching = CriteriaEvaluator.filter(sourceItems: localItems, criteria: criteria, duplicateReferenceItems: remoteItems)
                 snapshot = CalculationSnapshot(action: .deleteOlderThan, criteria: criteria, items: sorted(matching))
             }
+
+            if wantsRemote {
+                if localItems.isEmpty {
+                    localItems = try await photoLibrary.fetchLibraryItems(needsChecksum: needsChecksum)
+                }
+                if remoteItems.isEmpty {
+                    remoteItems = (try? await photoPrismClient.fetchLibraryItems(using: settings)) ?? []
+                }
+            }
+            var matchCriteria = criteria
+            matchCriteria.ageRule = nil
+            matchCriteria.avoidDuplicates = true
+            matchedItems = sorted(CriteriaEvaluator.matchingDuplicates(sourceItems: localItems, criteria: matchCriteria, duplicateReferenceItems: remoteItems))
 
             calculationSnapshot = snapshot
             totalItems = snapshot.summary.itemCount
             completedItems = 0
             if let fetchResult = remoteFetchDiagnostics {
-                let dropNote = fetchResult.droppedCount > 0 ? ", \(fetchResult.droppedCount) skipped (missing ID/hash)" : ""
-                let duplicateNote = criteria.avoidDuplicates ? " There are \(duplicateCount) duplicates that will not be downloaded." : ""
-                progressMessage = "Fetched \(fetchResult.rawDecodedCount) from server across \(fetchResult.pageCount) page(s)\(dropNote); \(snapshot.summary.itemCount) match your criteria.\(duplicateNote)"
+                var parts = [String(localized: "Fetched from server: \(fetchResult.rawDecodedCount) (pages: \(fetchResult.pageCount)). Matching your criteria: \(snapshot.summary.itemCount).")]
+                if fetchResult.droppedCount > 0 {
+                    parts.append(String(localized: "Skipped (missing ID/hash): \(fetchResult.droppedCount)."))
+                }
+                if criteria.avoidDuplicates {
+                    parts.append(String(localized: "Duplicates that will not be downloaded: \(duplicateCount)."))
+                }
+                progressMessage = parts.joined(separator: " ")
             } else if snapshot.action == .upload {
-                progressMessage = "Calculated \(snapshot.summary.itemCount) matching items. There are \(duplicateCount) duplicates that will not be uploaded."
+                progressMessage = String(localized: "Calculated \(snapshot.summary.itemCount) matching items.") + " " + String(localized: "Duplicates that will not be uploaded: \(duplicateCount).")
             } else if snapshot.action == .deleteFoundInPhotoPrism || snapshot.action == .deleteOlderThan {
-                progressMessage = "Calculated \(snapshot.summary.itemCount) matching items that will be deleted from your iPhone."
+                progressMessage = String(localized: "Matching items that will be deleted from your iPhone: \(snapshot.summary.itemCount).")
             } else {
-                progressMessage = snapshot.summary.itemCount == 0 ? "No matching items found." : "Calculated \(snapshot.summary.itemCount) matching items."
+                progressMessage = snapshot.summary.itemCount == 0 ? String(localized: "No matching items found.") : String(localized: "Calculated \(snapshot.summary.itemCount) matching items.")
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -236,7 +261,7 @@ final class AppViewModel: ObservableObject {
         isExecuting = true
         totalItems = snapshot.items.count
         completedItems = 0
-        progressMessage = "Preparing…"
+        progressMessage = String(localized: "Preparing…")
         defer { isExecuting = false }
 
         do {
@@ -268,7 +293,7 @@ final class AppViewModel: ObservableObject {
         try await UploadExecutionCoordinator.execute(
             items: snapshot.items,
             exportResources: { item in
-                await MainActor.run { self.progressMessage = "Uploading \(item.filename)…" }
+                await MainActor.run { self.progressMessage = String(localized: "Uploading \(item.filename)…") }
                 return try await self.photoLibrary.exportOriginalResources(forLocalIdentifier: item.id)
             },
             uploadResources: { item, fileURLs in
@@ -281,7 +306,7 @@ final class AppViewModel: ObservableObject {
                 await MainActor.run { self.completedItems += 1 }
             },
             finalize: {
-                await MainActor.run { self.progressMessage = "Finalizing PhotoPrism import…" }
+                await MainActor.run { self.progressMessage = String(localized: "Finalizing PhotoPrism import…") }
                 try await self.photoPrismClient.processUploadedOriginals(userUID: sessionInfo.userUID, uploadToken: uploadToken, using: settings)
             },
             cleanup: { fileURLs in
@@ -292,7 +317,7 @@ final class AppViewModel: ObservableObject {
 
     private func executeDownload(_ snapshot: CalculationSnapshot) async throws {
         for item in snapshot.items {
-            progressMessage = "Downloading \(item.filename)…"
+            progressMessage = String(localized: "Downloading \(item.filename)…")
             let data = try await photoPrismClient.downloadOriginal(for: item, using: settings)
             try await photoLibrary.saveDownloadedAsset(data: data, filename: item.filename, capturedAt: item.capturedAt, mediaKind: importMediaKind(forDownloadedItem: item))
             completedItems += 1
@@ -300,7 +325,7 @@ final class AppViewModel: ObservableObject {
     }
 
     private func executeDelete(_ snapshot: CalculationSnapshot) async throws {
-        progressMessage = "Deleting photos from the device…"
+        progressMessage = String(localized: "Deleting photos from the device…")
         try await photoLibrary.deleteAssets(localIdentifiers: snapshot.items.map(\.id))
         completedItems = snapshot.items.count
     }
@@ -310,24 +335,24 @@ final class AppViewModel: ObservableObject {
         if requiresServerConfiguration || !trimmedURL.isEmpty {
             guard !trimmedURL.isEmpty else {
                 if currentAction == .deleteOlderThan && effectiveCriteria.avoidDuplicates {
-                    errorMessage = "Configure PhotoPrism credentials to compare delete candidates against remote duplicates."
+                    errorMessage = String(localized: "Configure PhotoPrism credentials to compare delete candidates against remote duplicates.")
                 } else {
-                    errorMessage = "Enter the PhotoPrism URL, username, and password first."
+                    errorMessage = String(localized: "Enter the PhotoPrism URL, username, and password first.")
                 }
                 return false
             }
 
             guard settings.normalizedBaseURL != nil else {
-                errorMessage = "Enter a valid PhotoPrism server URL."
+                errorMessage = String(localized: "Enter a valid PhotoPrism server URL.")
                 return false
             }
         }
 
         guard !requiresServerConfiguration || settings.isComplete else {
             if currentAction == .deleteOlderThan && effectiveCriteria.avoidDuplicates {
-                errorMessage = "Configure PhotoPrism credentials to compare delete candidates against remote duplicates."
+                errorMessage = String(localized: "Configure PhotoPrism credentials to compare delete candidates against remote duplicates.")
             } else {
-                errorMessage = "Enter the PhotoPrism URL, username, and password first."
+                errorMessage = String(localized: "Enter the PhotoPrism URL, username, and password first.")
             }
             return false
         }
@@ -366,9 +391,9 @@ final class AppViewModel: ObservableObject {
 
     private func successMessage(for action: SyncAction, count: Int) -> String {
         switch action {
-        case .upload: "Uploaded \(count) photos to PhotoPrism."
-        case .download: "Downloaded \(count) photos to the device."
-        case .deleteFoundInPhotoPrism, .deleteOlderThan: "Deleted \(count) photos from the device."
+        case .upload: String(localized: "Uploaded \(count) photos to PhotoPrism.")
+        case .download: String(localized: "Downloaded \(count) photos to the device.")
+        case .deleteFoundInPhotoPrism, .deleteOlderThan: String(localized: "Deleted \(count) photos from the device.")
         }
     }
 }

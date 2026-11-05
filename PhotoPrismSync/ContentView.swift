@@ -45,8 +45,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $viewModel.isShowingPreview) {
             NavigationStack {
-                PreviewGridView(
+                PreviewPanelView(
                     items: viewModel.previewItems,
+                    matchedItems: viewModel.matchedItems,
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
                     syncButtonTitle: viewModel.executeButtonTitle,
@@ -69,7 +70,7 @@ struct ContentView: View {
         .alert("Error", isPresented: errorBinding, actions: {
             Button("OK", role: .cancel) {}
         }, message: {
-            Text(viewModel.errorMessage ?? "Unknown error")
+            Text(viewModel.errorMessage ?? String(localized: "Unknown error"))
         })
     }
 
@@ -128,7 +129,6 @@ struct ContentView: View {
                     } label: {
                         Label("Preview \(snapshot.summary.itemCount) items", systemImage: "square.grid.3x3")
                     }
-                    .disabled(snapshot.items.isEmpty)
                 }
             }
 
@@ -179,7 +179,6 @@ struct ContentView: View {
             } label: {
                 Label("Preview", systemImage: "square.grid.3x3")
             }
-            .disabled(viewModel.previewItems.isEmpty)
 
             Button(action: performPrimaryAction) {
                 Group {
@@ -197,9 +196,10 @@ struct ContentView: View {
 
     private var regularPreview: some View {
         Group {
-            if let snapshot = viewModel.calculationSnapshot, !snapshot.items.isEmpty {
-                PreviewGridView(
+            if let snapshot = viewModel.calculationSnapshot {
+                PreviewPanelView(
                     items: snapshot.items,
+                    matchedItems: viewModel.matchedItems,
                     formattedSize: viewModel.formattedSize,
                     onSync: requestExecution,
                     syncButtonTitle: viewModel.executeButtonTitle,
@@ -218,7 +218,7 @@ struct ContentView: View {
     }
 
     private var primaryActionTitle: String {
-        viewModel.calculationSnapshot == nil ? "Calculate" : viewModel.executeButtonTitle
+        viewModel.calculationSnapshot == nil ? String(localized: "Calculate") : viewModel.executeButtonTitle
     }
 
     private var progressFraction: Double {
